@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Inv;
 use Mpdf\Mpdf;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\pemasukan_pengeluaran;
 
 
 class InvoiceController extends Controller
@@ -41,6 +42,14 @@ class InvoiceController extends Controller
             $getData->status = $req->status;
             $getData->uang_dp_lunas = $req->uang_diterima;
             $getData->update();
+
+            // Masukan ke tabel pemasukan 
+            $data = new pemasukan_pengeluaran();
+            $data->tanggal = date('Y-m-d');
+            $data->jenis = 'pemasukan';
+            $data->jumlah = $req->uang_diterima;
+            $data->keterangan = 'Pemasukan dari penjualan barang '. $getData->nama_barang . ' dengan kode invoice '. $req->kode . ' dengan total harga '. $req->total;
+            $data->save();
         }
     
         return redirect()->back()->with('success', 'Data berhasil diupdate');
@@ -55,7 +64,7 @@ class InvoiceController extends Controller
         // dd($id);
         $delete = Invoice::where('id',$id);
         $delete->delete();
-        return redirect()->back()->with('success', 'Data berhasil dihapus');
+        return redirect('/dashboard/invoice')->with('success', 'Data berhasil dihapus');
     }
     public function tambahBarang($kode_inv)
     {
@@ -65,6 +74,32 @@ class InvoiceController extends Controller
     }
     public function saveBarang2(Request $request)
     {   
+        // pengurangan barang
+        $inv = Inv::where('nama', $request->barang)->first();
+        $a = $request->jumlah;
+        $b = $inv->jumlah_pack;
+        $c = $inv->jumlah_satuan;
+
+        // pengurangan satuan
+        $sisa = $c - $a;
+
+        // pengurangan barang
+        if( $sisa <= 0){
+            return redirect()->back()->with('error','Barang tidak cukup, tambahkan persediaan barang');
+        }
+
+        $pengurang = $a % $sisa;
+        if( $pengurang == 0){
+            $jumlah_pack_baru = $b - 1;
+        }else{
+            $jumlah_pack_baru = $b;
+        }
+        
+        $inv->update([
+            'jumlah_pack' => $jumlah_pack_baru,
+            'jumlah_satuan' => $sisa
+        ]);
+
         // dd($request->all());
         $harga_total = $request->harga * $request->jumlah;
         $data = new Invoice();
@@ -82,11 +117,40 @@ class InvoiceController extends Controller
         $data->total_harga = $harga_total;
         $data->save();
 
+        
+
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');
     }
     public function saveBarang(Request $request)
     {   
         // dd($request->all());
+
+        // pengurangan barang
+        $inv = Inv::where('nama', $request->barang)->first();
+        $a = $request->jumlah;
+        $b = $inv->jumlah_pack;
+        $c = $inv->jumlah_satuan;
+
+        // pengurangan satuan
+        $sisa = $c - $a;
+
+        // pengurangan barang
+        if( $sisa <= 0){
+            return redirect()->back()->with('error','Barang tidak cukup, tambahkan persediaan barang');
+        }
+
+        $pengurang = $a % $sisa;
+        if( $pengurang == 0){
+            $jumlah_pack_baru = $b - 1;
+        }else{
+            $jumlah_pack_baru = $b;
+        }
+        
+        $inv->update([
+            'jumlah_pack' => $jumlah_pack_baru,
+            'jumlah_satuan' => $sisa
+        ]);
+
         $harga_total = $request->harga * $request->jumlah;
         $data = new Invoice();
         // data diri pembeli
@@ -101,6 +165,7 @@ class InvoiceController extends Controller
         $data->jumlah_barang = $request->jumlah;
         $data->harga_barang = $request->harga;
         $data->total_harga = $harga_total;
+        $data->status = 'dp';
         $data->save();
 
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');

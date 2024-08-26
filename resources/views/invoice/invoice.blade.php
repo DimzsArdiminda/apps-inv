@@ -6,11 +6,11 @@
 <div class="d-flex justify-content-end mb-3">
     @if($data->isNotEmpty())  <!-- Pastikan $data tidak kosong -->
         @if ($status == 'dp')
-        <button type="button" class="d-none d-sm-inline-block mx-1 mb-2 btn btn-md btn-warning shadow-sm" data-toggle="modal" data-target="#modalForm">
-            <i class="fas fa-money-bill-alt"></i> Transaksi Pembayaran
-        </button>
-        <a href="{{ route('tambah.barang.invc', $data->first()->invoice_number) }}" class="d-none d-sm-inline-block mx-1 mb-2 btn btn-md btn-success shadow-sm">
-            <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Pembelian</a>
+            <button type="button" class="d-none d-sm-inline-block mx-1 mb-2 btn btn-md btn-warning shadow-sm" data-toggle="modal" data-target="#modalForm">
+                <i class="fas fa-money-bill-alt"></i> Transaksi Pembayaran
+            </button>
+            <a href="{{ route('tambah.barang.invc', $data->first()->invoice_number) }}" class="d-none d-sm-inline-block mx-1 mb-2 btn btn-md btn-success shadow-sm">
+                <i class="fas fa-plus fa-sm text-white-50"></i> Tambah Pembelian</a>
         @endif
     @endif
     <a href="{{ route('export.invoice', $kode) }}" class="d-none d-sm-inline-block mx-1 mb-2 btn btn-md btn-info shadow-sm">

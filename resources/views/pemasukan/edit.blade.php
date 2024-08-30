@@ -16,21 +16,28 @@
                         <label for="tanggal" class="text-primary small">Bulan</label>
                         <input type="text" class="form-control form-control-user" id="tanggal" name="tanggal" placeholder="Masukkan tanggal" value="{{ $data->tanggal }}" required>
                     </div>
+                    
                     <div class="form-group">
                         <label for="Pemasukan" class="text-primary small">Pemasukan</label>
-                        <input type="number" class="form-control form-control-user" id="Pemasukan" name="pemasukan" placeholder="Masukkan Jumlah Pemasukan" value="{{ $data->pemasukan }}" required>
+                        <input type="number" class="form-control form-control-user" id="Pemasukan" name="pemasukan" 
+                        placeholder="Masukkan Jumlah Pemasukan" value="{{ $data->jenis == 'pemasukan' ? $data->jumlah : '' }}">
                     </div>
+                    
                     <div class="form-group">
                         <label for="Pengeluaran" class="text-primary small">Pengeluaran</label>
-                        <input type="number" class="form-control form-control-user" id="Pengeluaran" name="pengeluaran" placeholder="Masukkan Jumlah Pengeluaran" value="{{ $data->pengeluaran }}" required>
+                        <input type="number" class="form-control form-control-user" id="Pengeluaran" name="pengeluaran" 
+                        placeholder="Masukkan Jumlah Pengeluaran" value="{{ $data->jenis == 'pengeluaran' ? $data->jumlah : '' }}">
                     </div>
+                    
                     <div class="form-group">
-                        <label for="keterangan" class="text-primary small">keterangan</label>
-                        <textarea class="form-control form-control-user rounded" id="keterangan" name="keterangan" placeholder="Tulis keterangan" required style="height: 150px">{{ $data->keterangan }}</textarea>
+                        <label for="keterangan" class="text-primary small">Keterangan</label>
+                        <textarea class="form-control form-control-user rounded" id="keterangan" name="keterangan" 
+                        placeholder="Tulis keterangan" required style="height: 150px">{{ $data->keterangan }}</textarea>
                     </div>
+                    
                     <hr>
                     <button class="btn btn-primary btn-lg px-5 rounded-pill" type="submit">
-                        Update
+                        Ubah
                     </button>
                     <a href="{{ url('/dashboard/anggaran') }}" class="btn btn-lg btn-danger shadow-sm rounded-pill">
                         <i class="fas fa-door-open fa-sm text-white-50"></i> Kembali

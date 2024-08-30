@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetController;
 
 // route keuangan
 Route::get('/dashboard/anggaran', [keuanganController::class, 'index'])->middleware(['auth', 'verified']);
+Route::get('/dashboard/anggaran/{bulan}/detail', [keuanganController::class, 'detail'])->middleware(['auth', 'verified'])->name('anggaran.detail');
 Route::get('/dashboard/anggaran/chart-data', [keuanganController::class, 'chartData'])->middleware(['auth', 'verified']);
 Route::get('/dashboard/anggaran/form-anggaran', [keuanganController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/dashboard/anggaran/store', [keuanganController::class, 'store'])->middleware(['auth', 'verified']);

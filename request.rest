@@ -1,0 +1,13 @@
+
+GET http://projek.test:1234/dashboard/inventaris-show/
+
+###
+POST http://projek.test:1234/api/dashboard/inventaris-act-create/
+Content-Type: application/json
+
+{
+    "nama_barang": "Kertas",
+    "sisa_pack": 10,
+    "sisa_barang": 500,
+}
+

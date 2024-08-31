@@ -32,28 +32,31 @@
     </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Bulan</th>
-                        <th>Tipe</th>
-                        <th>Uang Masuk / Keluar </th>
-                        {{-- <th>Keterangan</th> --}}
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($data as $item)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->bulan }}</td>
-                            <td>{{ $item->jenis }}</td>
-                            <td>{{ $item->total_jumlah }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th rowspan="2">#</th>
+                <th rowspan="2">Bulan</th>
+                <th colspan="2" class="text-center">Tipe</th>
+            </tr>
+            <tr>
+                <th>Total Pemasukan</th>
+                <th>Total Pengeluaran</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($data as $bulan => $items)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td><a href="{{ route('anggaran.detail', $bulan) }}">{{ \Carbon\Carbon::createFromFormat('Y-m', $bulan)->format('F, Y') }}</a></td>
+                    <td>{{ $items->where('jenis', 'pemasukan')->sum('total_jumlah') ?? '-' }}</td>
+                    <td>{{ $items->where('jenis', 'pengeluaran')->sum('total_jumlah') ?? '-' }}</td>
+                </tr>
+            @endforeach
+        </tbody>                
+    </table>
+</div>
+
     </div>
 </div>
 

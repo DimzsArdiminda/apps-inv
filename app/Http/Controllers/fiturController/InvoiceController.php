@@ -133,6 +133,7 @@ class InvoiceController extends Controller
 
         // pengurangan satuan
         $sisa = $c - $a;
+        // dd($sisa);
 
         // pengurangan barang
         if( $sisa <= 0){

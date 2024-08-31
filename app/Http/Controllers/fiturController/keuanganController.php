@@ -14,43 +14,50 @@ class keuanganController extends Controller
         // Mengelompokkan data berdasarkan bulan dan jenis, kemudian menjumlahkan 'jumlah'
         $data = pemasukan_pengeluaran::selectRaw('DATE_FORMAT(tanggal, "%Y-%m") as bulan, jenis, SUM(jumlah) as total_jumlah')
             ->groupBy('bulan', 'jenis')
-            ->get();
-    
+            ->get()
+            ->groupBy('bulan');
         return view('pemasukan.pemasukan', compact('data'));
     }
-    
+
     // Menampilkan chart anggaran
     public function chartData()
-{
-    $anggaran = pemasukan_pengeluaran::selectRaw('DATE_FORMAT(tanggal, "%Y-%m") as bulan, jenis, SUM(jumlah) as total_jumlah')
-        ->groupBy('bulan', 'jenis')
-        ->get();
+    {
+        $anggaran = pemasukan_pengeluaran::selectRaw('DATE_FORMAT(tanggal, "%Y-%m") as bulan, jenis, SUM(jumlah) as total_jumlah')
+            ->groupBy('bulan', 'jenis')
+            ->get();
 
-    $tanggal = [];
-    $pemasukan = [];
-    $pengeluaran = [];
+        $tanggal = [];
+        $pemasukan = [];
+        $pengeluaran = [];
 
-    foreach ($anggaran as $data) {
-        if (!in_array($data->bulan, $tanggal)) {
-            $tanggal[] = $data->bulan;  // Memastikan bahwa bulan hanya sekali masuk ke array
+        foreach ($anggaran as $data) {
+            if (!in_array($data->bulan, $tanggal)) {
+                $tanggal[] = $data->bulan;
+            }
+
+            if ($data->jenis == 'pemasukan') {
+                $pemasukan[] = $data->total_jumlah;
+            } elseif ($data->jenis == 'pengeluaran') {
+                $pengeluaran[] = $data->total_jumlah;
+            }
         }
 
-        if ($data->jenis == 'pemasukan') {
-            $pemasukan[] = $data->total_jumlah;
-        } elseif ($data->jenis == 'pengeluaran') {
-            $pengeluaran[] = $data->total_jumlah;
-        }
+        return response()->json([
+            'tanggal' => $tanggal,
+            'pemasukan' => $pemasukan,
+            'pengeluaran' => $pengeluaran,
+        ]);
     }
 
-    return response()->json([
-        'tanggal' => $tanggal,
-        'pemasukan' => $pemasukan,
-        'pengeluaran' => $pengeluaran,
-    ]);
-}
+    // Method buat nampilin detail anggaran per bulannya
+    public function detail($bulan)
+    {
+        $data = pemasukan_pengeluaran::whereRaw('DATE_FORMAT(tanggal, "%Y-%m") = ?', [$bulan])
+            ->orderBy('tanggal')
+            ->get();
 
-
-
+        return view('pemasukan.detail', compact('data', 'bulan'));
+    }
 
 
 
@@ -97,7 +104,7 @@ class keuanganController extends Controller
 
 
     // Menghapus data anggaran
-    public function delete($id)
+    public function destroy($id)
     {
         $data = pemasukan_pengeluaran::findOrFail($id);
         $data->delete();

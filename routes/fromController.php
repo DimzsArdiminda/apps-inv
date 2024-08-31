@@ -17,6 +17,8 @@ Route::post('/dashboard/anggaran/store', [keuanganController::class, 'store'])->
 Route::get('/dashboard/anggaran/edit/{id}', [keuanganController::class, 'edit'])->middleware(['auth', 'verified']);
 Route::put('/dashboard/anggaran/update/{id}', [keuanganController::class, 'update'])->middleware(['auth', 'verified']);
 Route::delete('/dashboard/anggaran/delete/{id}', [keuanganController::class, 'destroy'])->middleware(['auth', 'verified']);
+Route::delete('/dashboard/anggaran/delete/month/{bulan}', [keuanganController::class, 'destroyByMonth'])->name('anggaran.deleteByMonth');
+Route::get('/dashboard/anggaran/download/{bulan}', [keuanganController::class, 'downloadExcel'])->name('anggaran.downloadExcel');
 
 // route invoice
 Route::get('/api/get/invoice/{kode}', [InvoiceController::class, 'getInvoice'])->name('export.invoice')->middleware(['auth', 'verified']);

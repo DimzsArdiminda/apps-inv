@@ -14,27 +14,31 @@
                     @method('PUT')
                     <div class="form-group">
                         <label for="tanggal" class="text-primary small">Bulan</label>
-                        <input type="text" class="form-control form-control-user" id="tanggal" name="tanggal" placeholder="Masukkan tanggal" value="{{ $data->tanggal }}" required>
+                        <input type="date" class="form-control form-control-user" id="tanggal" name="tanggal" placeholder="Masukkan tanggal" value="{{ $data->tanggal }}" required>
                     </div>
-                    
                     <div class="form-group">
-                        <label for="Pemasukan" class="text-primary small">Pemasukan</label>
-                        <input type="number" class="form-control form-control-user" id="Pemasukan" name="pemasukan" 
-                        placeholder="Masukkan Jumlah Pemasukan" value="{{ $data->jenis == 'pemasukan' ? $data->jumlah : '' }}">
+                        <label for="type" class="text-primary small">Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="pemasukan" value="pemasukan" {{ $data->jenis == 'pemasukan' ? 'checked' : '' }} required>
+                            <label class="form-check-label" for="pemasukan">
+                                Pemasukan
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="type" id="pengeluaran" value="pengeluaran" {{ $data->jenis == 'pengeluaran' ? 'checked' : '' }} required>
+                            <label class="form-check-label" for="pengeluaran">
+                                Pengeluaran
+                            </label>
+                        </div>
                     </div>
-                    
                     <div class="form-group">
-                        <label for="Pengeluaran" class="text-primary small">Pengeluaran</label>
-                        <input type="number" class="form-control form-control-user" id="Pengeluaran" name="pengeluaran" 
-                        placeholder="Masukkan Jumlah Pengeluaran" value="{{ $data->jenis == 'pengeluaran' ? $data->jumlah : '' }}">
+                        <label for="Jumlah" class="text-primary small">Jumlah</label>
+                        <input type="number" name="jumlah" class="form-control form-control-user" placeholder="10000" value="{{ $data->jumlah }}">
                     </div>
-                    
                     <div class="form-group">
                         <label for="keterangan" class="text-primary small">Keterangan</label>
-                        <textarea class="form-control form-control-user rounded" id="keterangan" name="keterangan" 
-                        placeholder="Tulis keterangan" required style="height: 150px">{{ $data->keterangan }}</textarea>
+                        <textarea class="form-control form-control-user rounded" id="keterangan" name="keterangan" placeholder="Tulis keterangan" required style="height: 150px">{{ $data->keterangan }}</textarea>
                     </div>
-                    
                     <hr>
                     <button class="btn btn-primary btn-lg px-5 rounded-pill" type="submit">
                         Ubah

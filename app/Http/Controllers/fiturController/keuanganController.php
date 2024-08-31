@@ -59,8 +59,6 @@ class keuanganController extends Controller
         return view('pemasukan.detail', compact('data', 'bulan'));
     }
 
-
-
     // Menampilkan form untuk membuat anggaran baru
     public function create()
     {
@@ -70,14 +68,27 @@ class keuanganController extends Controller
     // Menyimpan data anggaran baru
     public function store(Request $request)
     {
-        // dd($request->all());
-        $data = new pemasukan_pengeluaran();
-        $data->tanggal = $request->tanggal;
-        $data->jenis = $request->type;
-        $data->jumlah = $request->jumlah;
-        $data->keterangan = $request->keterangan;
-        $data->save();
+        $tanggal = $request->tanggal;
+        $jenis = $request->type;
+        $jumlah = $request->jumlah;
+        $keterangan = $request->keterangan;
 
+        $existingEntry = pemasukan_pengeluaran::where('tanggal', $tanggal)
+            ->where('jenis', $jenis)
+            ->first();
+
+        if ($existingEntry) {
+            $existingEntry->jumlah += $jumlah;
+            $existingEntry->keterangan = $keterangan;
+            $existingEntry->save();
+        } else {
+            $data = new pemasukan_pengeluaran();
+            $data->tanggal = $tanggal;
+            $data->jenis = $jenis;
+            $data->jumlah = $jumlah;
+            $data->keterangan = $keterangan;
+            $data->save();
+        }
 
         return redirect('/dashboard/anggaran')->with('success', 'Anggaran berhasil ditambahkan');
     }
@@ -94,21 +105,28 @@ class keuanganController extends Controller
     {
         $data = pemasukan_pengeluaran::find($id);
         $data->tanggal = $request->tanggal;
-        $data->pemasukan = $request->pemasukan;
-        $data->pengeluaran = $request->pengeluaran;
+        $data->jenis = $request->type;
+        $data->jumlah = $request->jumlah; // Pastikan kamu ingin memperbarui jumlah juga
         $data->keterangan = $request->keterangan;
         $data->save();
 
         return redirect('/dashboard/anggaran')->with('success', 'Data anggaran berhasil diperbarui');
     }
 
-
-    // Menghapus data anggaran
+    // Menghapus data anggaran berdasarkan id
     public function destroy($id)
     {
         $data = pemasukan_pengeluaran::findOrFail($id);
         $data->delete();
 
         return redirect('/dashboard/anggaran')->with('success', 'Anggaran berhasil dihapus');
+    }
+
+    // Menghapus data anggaran berdasarkan bulan
+    public function destroyByMonth($bulan)
+    {
+        pemasukan_pengeluaran::whereRaw('DATE_FORMAT(tanggal, "%Y-%m") = ?', [$bulan])->delete();
+
+        return redirect('/dashboard/anggaran')->with('success', 'Anggaran bulan ' . $bulan . ' berhasil dihapus');
     }
 }

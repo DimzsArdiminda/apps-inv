@@ -49,15 +49,18 @@ class keuanganController extends Controller
         ]);
     }
 
-    // Method buat nampilin detail anggaran per bulannya
-    public function detail($bulan)
+    // Method buat nampilin detail anggaran per bulan dan jenisnya
+    public function detail($bulan, $jenis)
     {
         $data = pemasukan_pengeluaran::whereRaw('DATE_FORMAT(tanggal, "%Y-%m") = ?', [$bulan])
+            ->where('jenis', $jenis)
             ->orderBy('tanggal')
             ->get();
 
-        return view('pemasukan.detail', compact('data', 'bulan'));
+        return view('pemasukan.detail', compact('data', 'bulan', 'jenis'));
     }
+
+
 
     // Menampilkan form untuk membuat anggaran baru
     public function create()
@@ -122,11 +125,13 @@ class keuanganController extends Controller
         return redirect('/dashboard/anggaran')->with('success', 'Anggaran berhasil dihapus');
     }
 
-    // Menghapus data anggaran berdasarkan bulan
-    public function destroyByMonth($bulan)
+    // Menghapus data anggaran berdasarkan bulan dan jenis
+    public function deleteByMonthAndJenis($bulan, $jenis)
     {
-        pemasukan_pengeluaran::whereRaw('DATE_FORMAT(tanggal, "%Y-%m") = ?', [$bulan])->delete();
+        $data = pemasukan_pengeluaran::whereRaw('DATE_FORMAT(tanggal, "%Y-%m") = ?', [$bulan])
+            ->where('jenis', $jenis)
+            ->delete();
 
-        return redirect('/dashboard/anggaran')->with('success', 'Anggaran bulan ' . $bulan . ' berhasil dihapus');
+        return redirect()->back()->with('success', 'Data berhasil dihapus.');
     }
 }

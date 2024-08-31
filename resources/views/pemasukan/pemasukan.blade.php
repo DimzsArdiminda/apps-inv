@@ -39,41 +39,44 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th rowspan="2">#</th>
-                            <th rowspan="2">Bulan</th>
-                            <th colspan="2" class="text-center">Tipe</th>
-                            <th rowspan="2" class="aksi-col">Aksi</th>
-                        </tr>
-                        <tr>
-                            <th>Total Pemasukan</th>
-                            <th>Total Pengeluaran</th>
+                            <th>#</th>
+                            <th>Bulan</th>
+                            <th>Tipe</th>
+                            <th>Jumlah Uang Masuk / Keluar</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($data as $bulan => $items)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    <a href="{{ route('anggaran.detail', $bulan) }}">
-                                        {{ \Carbon\Carbon::createFromFormat('Y-m', $bulan)->format('F, Y') }}
-                                    </a>
-                                </td>
-                                <td>{{ $items->where('jenis', 'pemasukan')->sum('total_jumlah') ?? '-' }}</td>
-                                <td>{{ $items->where('jenis', 'pengeluaran')->sum('total_jumlah') ?? '-' }}</td>
-                                <td>
-                                    <form id="delete-form-{{ $loop->iteration }}"
-                                        action="{{ url('/dashboard/anggaran/delete/month/' . $bulan) }}" method="POST"
-                                        style="display:inline-block;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-danger"
-                                            onclick="confirmDelete('{{ $loop->iteration }}')"><i class="fas fa-trash-alt"></i></button>
-                                    </form>
-                                </td>
-                            </tr>
+                            @foreach ($items as $item)
+                                <tr>
+                                    <td>{{ $loop->parent->iteration }}</td>
+                                    <td>
+                                        <a
+                                            href="{{ route('anggaran.detail', ['bulan' => $bulan, 'jenis' => $item->jenis]) }}">
+                                            {{ $bulan }}
+                                        </a>
+                                    </td>
+                                    <td>{{ ucfirst($item->jenis) }}</td>
+                                    <td>Rp {{ number_format($item->total_jumlah, 0, ',', '.') }}</td>
+                                    <td>
+                                        <form id="delete-form-{{ $loop->iteration }}"
+                                            action="{{ route('anggaran.delete.month.jenis', ['bulan' => $bulan, 'jenis' => $item->jenis]) }}"
+                                            method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                onclick="confirmDelete('{{ $loop->iteration }}')"><i
+                                                    class="fas fa-trash-alt"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         @endforeach
                     </tbody>
                 </table>
+
+
             </div>
 
         </div>
@@ -156,51 +159,80 @@
         }
 
         function downloadExcel() {
-    // Get the table
-    var table = document.getElementById("dataTable");
+            // Get the table
+            var table = document.getElementById("dataTable");
 
-    // Convert table to worksheet
-    var ws = XLSX.utils.table_to_sheet(table);
+            // Convert table to worksheet
+            var ws = XLSX.utils.table_to_sheet(table);
 
-    // Get the range of cells in the worksheet
-    const range = XLSX.utils.decode_range(ws['!ref']);
+            // Get the range of cells in the worksheet
+            const range = XLSX.utils.decode_range(ws['!ref']);
 
-    // Remove "Aksi" column (index 4) and its content
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-        const address = XLSX.utils.encode_cell({ r: R, c: 4 });
-        delete ws[address];
-    }
+            // Remove "Aksi" column (index 4) and its content
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                const address = XLSX.utils.encode_cell({
+                    r: R,
+                    c: 4
+                });
+                delete ws[address];
+            }
 
-    // Adjust column widths
-    ws['!cols'] = ws['!cols'] || [];
-    table.querySelectorAll('thead tr th').forEach((th, i) => {
-        // Check if column index is less than 4 to avoid index errors
-        if (i !== 4) {
-            ws['!cols'][i] = { width: th.innerText.length + 10 };
+            // Adjust column widths
+            ws['!cols'] = ws['!cols'] || [];
+            table.querySelectorAll('thead tr th').forEach((th, i) => {
+                // Check if column index is less than 4 to avoid index errors
+                if (i !== 4) {
+                    ws['!cols'][i] = {
+                        width: th.innerText.length + 10
+                    };
+                }
+            });
+
+            // Remove unwanted rows/columns
+            // (Example: removing rows where all cells are empty)
+            for (let R = range.e.r; R >= range.s.r; --R) {
+                let allEmpty = true;
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const address = XLSX.utils.encode_cell({
+                        r: R,
+                        c: C
+                    });
+                    if (ws[address] && ws[address].v) {
+                        allEmpty = false;
+                        break;
+                    }
+                }
+                if (allEmpty) {
+                    for (let C = range.s.c; C <= range.e.c; ++C) {
+                        const address = XLSX.utils.encode_cell({
+                            r: R,
+                            c: C
+                        });
+                        delete ws[address];
+                    }
+                }
+            }
+
+            // Create workbook and add the worksheet
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Daftar Anggaran");
+
+            // Generate Excel file and force download
+            var wbout = XLSX.write(wb, {
+                bookType: 'xlsx',
+                type: 'binary'
+            });
+
+            function s2ab(s) {
+                var buf = new ArrayBuffer(s.length);
+                var view = new Uint8Array(buf);
+                for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+                return buf;
+            }
+            saveAs(new Blob([s2ab(wbout)], {
+                type: "application/octet-stream"
+            }), "daftar_total_anggaran.xlsx");
         }
-    });
-
-    // Create workbook and add the worksheet
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Daftar Anggaran");
-
-    // Generate Excel file and force download
-    var wbout = XLSX.write(wb, {
-        bookType: 'xlsx',
-        type: 'binary'
-    });
-
-    function s2ab(s) {
-        var buf = new ArrayBuffer(s.length);
-        var view = new Uint8Array(buf);
-        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-        return buf;
-    }
-    saveAs(new Blob([s2ab(wbout)], {
-        type: "application/octet-stream"
-    }), "daftar_total_anggaran.xlsx");
-}
-
     </script>
 
 @endsection

@@ -10,14 +10,14 @@ use App\Http\Controllers\Auth\PasswordResetController;
 
 // route keuangan
 Route::get('/dashboard/anggaran', [keuanganController::class, 'index'])->middleware(['auth', 'verified']);
-Route::get('/dashboard/anggaran/{bulan}/detail', [keuanganController::class, 'detail'])->middleware(['auth', 'verified'])->name('anggaran.detail');
+Route::get('/anggaran/detail/{bulan}/{jenis}', [keuanganController::class, 'detail'])->name('anggaran.detail');
 Route::get('/dashboard/anggaran/chart-data', [keuanganController::class, 'chartData'])->middleware(['auth', 'verified']);
 Route::get('/dashboard/anggaran/form-anggaran', [keuanganController::class, 'create'])->middleware(['auth', 'verified']);
 Route::post('/dashboard/anggaran/store', [keuanganController::class, 'store'])->middleware(['auth', 'verified']);
 Route::get('/dashboard/anggaran/edit/{id}', [keuanganController::class, 'edit'])->middleware(['auth', 'verified']);
 Route::put('/dashboard/anggaran/update/{id}', [keuanganController::class, 'update'])->middleware(['auth', 'verified']);
 Route::delete('/dashboard/anggaran/delete/{id}', [keuanganController::class, 'destroy'])->middleware(['auth', 'verified']);
-Route::delete('/dashboard/anggaran/delete/month/{bulan}', [keuanganController::class, 'destroyByMonth'])->name('anggaran.deleteByMonth');
+Route::delete('/dashboard/anggaran/delete/month/{bulan}/jenis/{jenis}', [keuanganController::class, 'deleteByMonthAndJenis'])->name('anggaran.delete.month.jenis');
 Route::get('/dashboard/anggaran/download/{bulan}', [keuanganController::class, 'downloadExcel'])->name('anggaran.downloadExcel');
 
 // route invoice

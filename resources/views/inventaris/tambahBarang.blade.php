@@ -18,7 +18,7 @@
                     <div class="card-body">
                         <p>Nama Barang : {{ $data->nama }} </p> 
                         <p>Jumlah (Satuan) : {{ $data->jumlah_satuan }}</p> 
-                        <p>Jumlah (Pcs) : {{ $data->jumlah_pack }}</p>
+                        <p>Jumlah (Pack) : {{ $data->jumlah_pack }}</p>
                         <b>Anda cukup memasukan jumlah pack, secara otomatis system akan menghitung jumlah per satuan</b>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                                 <input type="hidden" class="form-control form-control-user" id="JumlahSatuan" name="jumlah_satuan" placeholder="Masukkan Jumlah dalam Pack" value="{{ $data->jumlah_satuan }}" >
                             {{-- </div> --}}
                             <div class="form-group">
-                                <label for="JumlahPcs" class="text-primary small">Jumlah (Pcs)</label>
+                                <label for="JumlahPcs" class="text-primary small">Jumlah (Pack)</label>
                                 <input type="number" class="form-control form-control-user" id="JumlahPcs" name="jumlah_pack" placeholder="Masukkan Jumlah dalam Pcs" value="">
                             </div>
                             {{-- <div class="form-group"> --}}

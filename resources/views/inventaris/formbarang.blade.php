@@ -33,10 +33,6 @@
                                 <label for="JumlahPcs" class="text-primary small">Jumlah - Pack </label>
                                 <input type="number" class="form-control form-control-user" id="JumlahPcs" name="jumlah_pack" placeholder="Masukkan Jumlah dalam Pcs" required>
                             </div>
-                            {{-- <div class="form-group">
-                                <label for="JumlahPcs" class="text-primary small">Jumlah (Pcs)</label>
-                                <input type="number" class="form-control form-control-user" id="JumlahPcs" name="jumlah_pcs" placeholder="Masukkan Jumlah dalam Pcs">
-                            </div> --}}
                             <hr>
                             <button  class="btn btn-primary btn-lg px-5 rounded-pill" type="submit">
                                 Kirim

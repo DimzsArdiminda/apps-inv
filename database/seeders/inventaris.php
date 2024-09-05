@@ -14,19 +14,25 @@ class inventaris extends Seeder
     public function run(): void
     {
         inv::create([
-            'nama' => 'ID CARD',
+            'nama' => 'TALI',
             'jumlah_satuan' => 100,
             'jumlah_pack' => 50,
             'pengisian_terakhir' => 50,
         ]);
         inv::create([
-            'nama' => 'tali lanyard',
+            'nama' => 'KERTAS',
             'jumlah_satuan' => 100,
             'jumlah_pack' => 50,
             'pengisian_terakhir' => 50,
         ]);
         inv::create([
-            'nama' => 'stopper',
+            'nama' => 'STOPPER',
+            'jumlah_satuan' => 100,
+            'jumlah_pack' => 50,
+            'pengisian_terakhir' => 50,
+        ]);
+        inv::create([
+            'nama' => 'KAIL',
             'jumlah_satuan' => 100,
             'jumlah_pack' => 50,
             'pengisian_terakhir' => 50,

@@ -89,7 +89,7 @@ class InventarisController extends Controller
             'jumlah_pack' => 'required',
         ]);
         $data = new Inv();
-        $data->nama = $request->nama;
+        $data->nama = strtoupper($request->nama);
         $data->jumlah_satuan = $request->jumlah_satuan;
         $data->jumlah_pack = $request->jumlah_pack;
         $data->pengisian_terakhir = $request->jumlah_pack;

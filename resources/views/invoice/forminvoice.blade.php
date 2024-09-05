@@ -23,26 +23,48 @@
                             <label for="no_hp" class="text-primary small">No HP</label>
                             <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Format : +62812345678" required>
                         </div>
-                        
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="email" class="text-primary small">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="example.com" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="alamat" class="text-primary small">Alamat</label>
-                            <textarea class="form-control" id="alamat" name="alamat" placeholder="Masukkan Alamat" required></textarea>
-                        </div>
-                    </div>
+
+                    <!-- Radio Button for Lanyard / Non Lanyard -->
                     <div class="form-group">
-                        <div class="mb-3">
-                            <label for="selectUser" class="text-primary small">Barang yang tersedia</label>
-                            <select class="form-control" id="selectUser" name="barang" required style="width: 100%;"></select>
+                        <label class="text-primary small">Jenis Barang</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jenis_barang" id="lanyard" value="Lanyard" required>
+                            <label class="form-check-label" for="lanyard">Lanyard</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jenis_barang" id="non_lanyard" value="Non Lanyard" required>
+                            <label class="form-check-label" for="non_lanyard">Non Lanyard</label>
                         </div>
                     </div>
-                    
+
+                    <!-- Checkbox for Lanyard options -->
+                    <div id="lanyardOptions" class="form-group" style="display:none;">
+                        <label class="text-primary small">Paket Lanyard</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="lanyard_options[]" value="1" checked>
+                            <label class="form-check-label" for="lanyardTali">Tali</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="lanyard_options[]" value="1" checked>
+                            <label class="form-check-label" for="lanyardStopper">Stopper</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="lanyard_options[]" value="1" checked>
+                            <label class="form-check-label" for="lanyardKail">Kail</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="lanyard_options[]" value="1" checked>
+                            <label class="form-check-label" for="lanyardKertas">Kertas</label>
+                        </div>
+                    </div>
+
+                    <!-- Dropdown for Non Lanyard -->
+                    <div id="nonLanyardOptions" class="form-group" style="display:none;">
+                        <label for="selectUser" class="text-primary small">Barang yang tersedia</label>
+                        <select class="form-control" id="selectUser" name="barang" style="width: 100%;"></select>
+                    </div>
+
                     <div class="form-group row">
                         <div class="col-md-4 mb-3">
                             <label for="Jumlah" class="text-primary small">Jumlah</label>
@@ -71,6 +93,18 @@
 
 <script>
     $(document).ready(function () {
+        // Show/Hide options based on radio selection
+        $('input[name="jenis_barang"]').on('change', function () {
+            if ($(this).val() === 'Lanyard') {
+                $('#lanyardOptions').show();
+                $('#nonLanyardOptions').hide();
+            } else {
+                $('#lanyardOptions').hide();
+                $('#nonLanyardOptions').show();
+            }
+        });
+
+        // Initialize Select2 for non-lanyard dropdown
         $('#selectUser').select2({
             placeholder: 'Masukkan Nama Barang',
             ajax: {

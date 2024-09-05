@@ -57,8 +57,6 @@
                         <th>#</th>
                         <th>Nama</th>
                         <th>No HP</th>
-                        <th>Email</th>
-                        <th>Alamat</th>
                         <th>Invoice Number</th>
                         <th>Nama Barang</th>
                         <th>Jumlah Barang</th>
@@ -74,8 +72,6 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $inv->nama }}</td>
                         <td>{{ $inv->no_hp }}</td>
-                        <td>{{ $inv->email }}</td>
-                        <td>{{ $inv->alamat }}</td>
                         <td>{{ $inv->invoice_number }}</td>
                         <td>{{ $inv->nama_barang }}</td>
                         <td>{{ $inv->jumlah_barang }}</td>

@@ -15,37 +15,28 @@ class dataInvoice extends Seeder
         Invoice::create([
             'nama' => 'Rizky',
             'no_hp' => '08123456789',
-            'email' => 'Rizky@mail.com',
-            'alamat' => 'Jl. Raya',
             'invoice_number' => 'INV-001',
-            'nama_barang' => 'Laptop',
+            'nama_barang' => 'TALI',
             'jumlah_barang' => 1,
             'harga_barang' => 10000000,
-            'total_harga' => 10000000,
             'status' => 'dp',
         ]);
         Invoice::create([
             'nama' => 'Rizky',
             'no_hp' => '08123456789',
-            'email' => 'Rizky@mail.com',
-            'alamat' => 'Jl. Raya',
             'invoice_number' => 'INV-001',
             'nama_barang' => 'BUKU',
             'jumlah_barang' => 1,
             'harga_barang' => 10000000,
-            'total_harga' => 10000000,
             'status' => 'dp',
         ]);
         Invoice::create([
             'nama' => 'Rizky',
             'no_hp' => '08123456789',
-            'email' => 'Rizky@mail.com',
-            'alamat' => 'Jl. Raya',
             'invoice_number' => 'INV-001',
             'nama_barang' => 'BUKU',
             'jumlah_barang' => 1,
             'harga_barang' => 10000000,
-            'total_harga' => 10000000,
             'status' => 'dp',
         ]);
     }

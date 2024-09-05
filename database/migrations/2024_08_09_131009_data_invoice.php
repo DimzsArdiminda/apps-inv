@@ -15,13 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('no_hp');
-            $table->string('email');
-            $table->string('alamat');
             $table->string('invoice_number');
             $table->string('nama_barang');
             $table->integer('jumlah_barang');
             $table->integer('harga_barang');
-            $table->integer('total_harga');
             $table->integer('total_harga_keseluruhan')->nullable();
             $table->enum('status',['dp','selesai'])->nullable();
             $table->string('uang_dp_lunas')->nullable();

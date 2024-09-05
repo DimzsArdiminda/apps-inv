@@ -23,9 +23,8 @@
                         <th>#</th>
                         <th>Nama</th>
                         <th>No HP</th>
-                        <th>Email</th>
-                        <th>Alamat</th>
                         <th>Invoice Number</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -35,9 +34,13 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $inv->nama }}</td>
                         <td>{{ $inv->no_hp }}</td>
-                        <td>{{ $inv->email }}</td>
-                        <td>{{ $inv->alamat }}</td>
                         <td>{{ $inv->invoice_number }}</td>
+                        <td>
+                            @if($inv->status == 'dp')
+                            <span class="badge badge-danger">{{ $inv->status }}</span>
+                            @elseif($inv->status == 'selesai')
+                            <span class="badge badge-success">{{ $inv->status }}</span>
+                            @endif
                         <td>
                             <a href="{{ route('invoiceFull', $inv->invoice_number) }}" class="btn btn-sm btn-warning">
                                 <i class="fas fa-shopping-basket"></i>

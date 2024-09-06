@@ -1,10 +1,8 @@
 Revisi fitur 
-1. Penambahan fitur pengurangan manual di setiap baris (dibuat dropdown alert saja) => ammar
-2. Perubahan form invocie, tambahkan ceklis untuk tali, kertas, kail, stoper. =>dimas
-3. penambahan paket lanyard => dimas
-4. saran harga sesuai range (menyusul) => ammar
-5. Alert Sisa barang di halaman invoice => ammar
-
+1. Penambahan fitur pengurangan manual di setiap baris (dibuat dropdown alert saja)
+2. Alert Sisa barang di halaman invoice
+3. Update Form input 
+4. Perbarui halaman Invoice 
 
 Lanyard:
 1. Kail => 100 (pcs) (done)

@@ -218,46 +218,35 @@ class InvoiceController extends Controller
     public function saveBarang(Request $request)
     {   
         // dd($request->all());
-        if($request->jenis_barang == 'Lanyard'){
-            // dd($request->all());
-            // 0 => tali | 1 => stopper | 2 => kail | 3 => kertas
+        if($request->jenis_barang == 'Lanyard') {
+            // Perhitungan total barang yang digunakan
             $getTali = isset($request->lanyard_options[0]) ? $request->lanyard_options[0] * $request->jumlah : 0;
             $getStopper = isset($request->lanyard_options[1]) ? $request->lanyard_options[1] * $request->jumlah : 0;
             $getKail = isset($request->lanyard_options[2]) ? $request->lanyard_options[2] * $request->jumlah : 0;
             $getKertas = isset($request->lanyard_options[3]) ? $request->lanyard_options[3] * $request->jumlah : 0;
-
-            // dd($getTali, $getStopper, $getKail, $getKertas);
-
+    
             $getBarang = Inv::all();
-            // dd($getBarang);
-            // tali
+    
+            // Mendapatkan jumlah barang di database
             $tali = $getBarang->where('nama', 'TALI')->first();
             $jumlahTali = $tali->jumlah_satuan;
-            
-            // STOPPER
-            $STOPPER = $getBarang->where('nama', 'STOPPER')->first();
-            $jumlahSTOPPER = $STOPPER->jumlah_satuan;
-
-            // KERTAS
-            $KERTAS = $getBarang->where('nama', 'KERTAS')->first();
-            $jumlahKERTAS = $KERTAS->jumlah_satuan;
-
-            // STOPPER
-            $KAIL = $getBarang->where('nama', 'KAIL')->first();
-            $jumlahKAIL = $KAIL->jumlah_satuan;
-
-            // dd($jumlahTali, $jumlahSTOPPER, $jumlahKERTAS, $jumlahKAIL);
-            // dd($KAIL, $STOPPER, $KERTAS, $tali);
-
-            // pengurangan barang
+    
+            $stopper = $getBarang->where('nama', 'STOPPER')->first();
+            $jumlahStopper = $stopper->jumlah_satuan;
+    
+            $kail = $getBarang->where('nama', 'KAIL')->first();
+            $jumlahKail = $kail->jumlah_satuan;
+    
+            $kertas = $getBarang->where('nama', 'KERTAS')->first();
+            $jumlahKertas = $kertas->jumlah_satuan;
+    
+            // Menghitung sisa barang setelah pembelian
             $sisaTali = $jumlahTali - $getTali;
-            $sisaStopper = $jumlahSTOPPER - $getStopper;
-            $sisaKail = $jumlahKAIL - $getKail;
-            $sisaKertas = $jumlahKERTAS - $getKertas;
-
-            // dd($sisaTali, $sisaStopper,  $sisaKail, $sisaKertas,);
-
-            // jika barang <= 5 kembalikan request dengan alert 
+            $sisaStopper = $jumlahStopper - $getStopper;
+            $sisaKail = $jumlahKail - $getKail;
+            $sisaKertas = $jumlahKertas - $getKertas;
+    
+            // Validasi barang jika jumlahnya kurang dari minimum stok
             $barangKurang = [];
             if($sisaTali <= 5){
                 $barangKurang[] = 'TALI';
@@ -265,94 +254,93 @@ class InvoiceController extends Controller
             if($sisaStopper <= 5){
                 $barangKurang[] = 'STOPPER';
             }
-            if($sisaKertas <= 5){
-                $barangKurang[] = 'KERTAS';
-            }
             if($sisaKail <= 5){
                 $barangKurang[] = 'KAIL';
             }
-
+            if($sisaKertas <= 5){
+                $barangKurang[] = 'KERTAS';
+            }
+    
             if(!empty($barangKurang)){
                 $barangKurangStr = implode(', ', $barangKurang);
                 return redirect()->back()->with('error', 'Barang ' . $barangKurangStr . ' tidak cukup, tambahkan persediaan barang');
             }
-
-
-            // pengurangan pack 
-            $penguranganPackTali = $getTali % $sisaTali;
-            $penguranganPackStopper = $getStopper % $sisaStopper;
-            $penguranganPackKertas = $getKertas % $sisaKertas;
-            $penguranganPackKail = $getKail % $sisaKail;
-
-            $jumlah_pack_baru_tali = $penguranganPackTali == 0 ? $tali->jumlah_pack - 1 : $tali->jumlah_pack;
-            $jumlah_pack_baru_stopper = $penguranganPackStopper == 0 ? $STOPPER->jumlah_pack - 1 : $STOPPER->jumlah_pack;
-            $jumlah_pack_baru_kertas = $penguranganPackKertas == 0 ? $KERTAS->jumlah_pack - 1 : $KERTAS->jumlah_pack;
-            $jumlah_pack_baru_kail = $penguranganPackKail == 0 ? $KAIL->jumlah_pack - 1 : $KAIL->jumlah_pack;
-
-            // dd($penguranganPackTali, $penguranganPackStopper, $penguranganPackKertas, $penguranganPackKail);
-
-            // update data tali, stopper, kertas and kail
+    
+            // Menghitung sisa pack dan satuan setelah pembelian
+            $jumlahPackTali = $getTali % $tali->jumlah_pack == 0 ? $tali->jumlah_pack - 1 : $tali->jumlah_pack;
+            $jumlahPackStopper = $getStopper % $stopper->jumlah_pack == 0 ? $stopper->jumlah_pack - 1 : $stopper->jumlah_pack;
+            $jumlahPackKail = $getKail % $kail->jumlah_pack == 0 ? $kail->jumlah_pack - 1 : $kail->jumlah_pack;
+            $jumlahPackKertas = $getKertas % $kertas->jumlah_pack == 0 ? $kertas->jumlah_pack - 1 : $kertas->jumlah_pack;
+    
+            // Update data ke database
             $updateTali = Inv::where('nama', 'TALI')->update([
-                'jumlah_pack' => $jumlah_pack_baru_tali,
+                'jumlah_pack' => $jumlahPackTali,
                 'jumlah_satuan' => $sisaTali
             ]);
             $updateStopper = Inv::where('nama', 'STOPPER')->update([
-                'jumlah_pack' => $jumlah_pack_baru_stopper,
+                'jumlah_pack' => $jumlahPackStopper,
                 'jumlah_satuan' => $sisaStopper
             ]);
-            $updateKertas = Inv::where('nama', 'KERTAS')->update([
-                'jumlah_pack' => $jumlah_pack_baru_kertas,
-                'jumlah_satuan' => $sisaKertas
-            ]);
             $updateKail = Inv::where('nama', 'KAIL')->update([
-                'jumlah_pack' => $jumlah_pack_baru_kail,
+                'jumlah_pack' => $jumlahPackKail,
                 'jumlah_satuan' => $sisaKail
             ]);
+            $updateKertas = Inv::where('nama', 'KERTAS')->update([
+                'jumlah_pack' => $jumlahPackKertas,
+                'jumlah_satuan' => $sisaKertas
+            ]);
 
+            
         }else{
-            // pengurangan barang
+            // Dapatkan data inventaris berdasarkan nama barang
             $inv = Inv::where('nama', $request->barang)->first();
-            $a = $request->jumlah;
-            $b = $inv->jumlah_pack;
-            $c = $inv->jumlah_satuan;
 
-            // pengurangan satuan
-            $sisa = $c - $a;
-            // dd($sisa);
+            // Jumlah yang diminta oleh pengguna
+            $jumlahDiminta = $request->jumlah;
 
-            // pengurangan barang
-            if( $sisa <= 0){
+            // Jumlah total satuan yang ada
+            $jumlahSatuan = $inv->jumlah_satuan;
+
+            // Jumlah pack yang tersedia
+            $jumlahPack = $inv->jumlah_pack;
+
+            // Menghitung satuan per pack
+            $satuanPerPack = $jumlahSatuan / $jumlahPack;
+
+            // Mengurangi satuan berdasarkan jumlah yang diminta
+            $sisaSatuan = $jumlahSatuan - $jumlahDiminta;
+
+            // Jika sisa satuan menjadi negatif, artinya jumlah yang diminta melebihi jumlah yang tersedia
+            if ($sisaSatuan < 0) {
                 return redirect()->back()->with('error','Barang tidak cukup, tambahkan persediaan barang');
             }
 
-            $pengurang = $a % $sisa;
-            if( $pengurang == 0){
-                $jumlah_pack_baru = $b - 1;
-            }else{
-                $jumlah_pack_baru = $b;
+            // Mengurangi jumlah pack jika ada pack yang habis terpakai
+            if ($jumlahDiminta >= $satuanPerPack) {
+                $packTerpakai = floor($jumlahDiminta / $satuanPerPack);
+                $jumlahPackBaru = max(0, $jumlahPack - $packTerpakai);
+            } else {
+                $jumlahPackBaru = $jumlahPack;
             }
-            
+
+            // Perbarui data inventaris dengan jumlah pack dan satuan yang baru
             $inv->update([
-                'jumlah_pack' => $jumlah_pack_baru,
-                'jumlah_satuan' => $sisa
+                'jumlah_pack' => $jumlahPackBaru,
+                'jumlah_satuan' => $sisaSatuan
             ]);
         }
 
-        
-        $harga_total = $request->harga * $request->jumlah;
+        // Menyimpan data invoice
+        $hargaTotal = $request->harga * $request->jumlah;
         $data = new Invoice();
-        // data diri pembeli
         $data->nama = $request->nama;
         $data->no_hp = $request->no_hp;
-
-        // data barang
         $data->invoice_number = 'INV-'.rand(1000, 9999);
-
         $jenisBarang = $request->jenis_barang == "Lanyard" ? 'Lanyard' : $request->barang;
         $data->nama_barang = $jenisBarang;
         $data->jumlah_barang = $request->jumlah;
         $data->harga_barang = $request->harga;
-        $HargaPass = $request->harga_pas == 1 ? $request->harga : $harga_total;
+        $HargaPass = $request->harga_pas == 1 ? $request->harga : $hargaTotal;
         $data->total_harga = $HargaPass;
         $data->status = 'dp';
         $data->save();

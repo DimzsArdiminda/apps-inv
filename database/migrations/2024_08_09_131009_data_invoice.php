@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('data_invoice', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('no_hp');
+            $table->string('no_hp')->nullable();
             $table->string('invoice_number');
             $table->string('nama_barang');
             $table->integer('jumlah_barang');
             $table->integer('harga_barang');
+            $table->integer('total_harga')->nullable();
             $table->integer('total_harga_keseluruhan')->nullable();
             $table->enum('status',['dp','selesai'])->nullable();
             $table->string('uang_dp_lunas')->nullable();

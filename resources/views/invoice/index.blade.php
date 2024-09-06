@@ -37,9 +37,9 @@
                         <td>{{ $inv->invoice_number }}</td>
                         <td>
                             @if($inv->status == 'dp')
-                            <span class="badge badge-danger">{{ $inv->status }}</span>
+                                <span class="badge badge-danger">{{ $inv->status }}</span>
                             @elseif($inv->status == 'selesai')
-                            <span class="badge badge-success">{{ $inv->status }}</span>
+                                <span class="badge badge-success">{{ $inv->status }}</span>
                             @endif
                         <td>
                             <a href="{{ route('invoiceFull', $inv->invoice_number) }}" class="btn btn-sm btn-warning">

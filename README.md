@@ -1,8 +1,9 @@
-Revisi fitur 
-1. Penambahan fitur pengurangan manual di setiap baris (dibuat dropdown alert saja)
-2. Alert Sisa barang di halaman invoice
-3. Update Form input 
-4. Perbarui halaman Invoice 
+To Do List:
+1. Dashboard : show alert sisa barang
+2. Inventaris : Pengurangan Manual, Form Update, Form Input, 
+4. Invoice : Perbarui halaman Invoice
+
+
 
 Lanyard:
 1. Kail => 100 (pcs) (done)

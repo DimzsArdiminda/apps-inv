@@ -13,27 +13,43 @@ use App\Models\pemasukan_pengeluaran;
 
 class InvoiceController extends Controller
 {
-
-
     public function getInvoice($kode)
     {
         // Ambil semua data invoice berdasarkan nomor invoice
-        $data = Invoice::where('invoice_number', $kode)->get(); // Menggunakan get() untuk mendapatkan banyak data
-            
+        $data = Invoice::where('invoice_number', $kode)->get();
+
         // Cek apakah data ditemukan
         if ($data->isEmpty()) {
             return redirect()->back()->withErrors('Invoice not found.');
         }
 
-        // Kirimkan collection data ke dalam array
-        $pdf = Pdf::loadView('invoice.invoiceFull.invoicefull', ['data' => $data]);
+        // Perhitungan total dan status pembayaran
+        $grand_total = $data->sum(function ($item) {
+            return $item->jumlah_barang * $item->harga_barang;
+        });
+
+        $total_dibayar = $data->sum('sudah_dibayar');
+        $total_sisa = $grand_total - $total_dibayar;
+
+        // Proses data yang akan dikirim ke view
+        $invoiceData = [
+            'data' => $data,
+            'grand_total' => $grand_total,
+            'total_dibayar' => $total_dibayar,
+            'total_sisa' => $total_sisa,
+        ];
+
+        // Kirimkan data ke view dan generate PDF
+        $pdf = Pdf::loadView('invoice.invoiceFull.invoicefull', $invoiceData)->setPaper('a4', 'portrait');
 
         // Unduh PDF
         return $pdf->download('invoice.pdf');
     }
+
     
     
     public function transaksi(Request $req){
+        // dd($req->all());
         $getData = Invoice::where('invoice_number', $req->kode)->first();
         // dd($getData);
         
@@ -48,7 +64,7 @@ class InvoiceController extends Controller
             $data->tanggal = date('Y-m-d');
             $data->jenis = 'pemasukan';
             $data->jumlah = $req->uang_diterima;
-            $data->keterangan = 'Pemasukan dari penjualan barang '. $getData->nama_barang . ' dengan kode invoice '. $req->kode . ' dengan total harga '. $req->total;
+            $data->keterangan = 'Pemasukan dari penjualan barang '. $getData->nama_barang . ' dengan kode invoice '. $req->kode . '. Dari Total  '. $req->total;
             $data->save();
         }
     

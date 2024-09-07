@@ -15,27 +15,43 @@ class inventaris extends Seeder
     {
         inv::create([
             'nama' => 'TALI',
-            'jumlah_satuan' => 100,
-            'jumlah_pack' => 50,
-            'pengisian_terakhir' => 50,
+            'jumlah_satuan' => 50,
+            'jumlah_pack' => 2,
+            'pengisian_terakhir' => 2,
+            'jumlah_pack_asli' => 1,
+            'jumlah_satuan_asli' => 25,
         ]);
         inv::create([
             'nama' => 'KERTAS',
-            'jumlah_satuan' => 100,
-            'jumlah_pack' => 50,
-            'pengisian_terakhir' => 50,
+            'jumlah_satuan' => 50,
+            'jumlah_pack' => 2,
+            'pengisian_terakhir' => 2,
+            'jumlah_pack_asli' => 1,
+            'jumlah_satuan_asli' => 25,
         ]);
         inv::create([
             'nama' => 'STOPPER',
-            'jumlah_satuan' => 100,
-            'jumlah_pack' => 50,
-            'pengisian_terakhir' => 50,
+            'jumlah_satuan' => 50,
+            'jumlah_pack' => 2,
+            'pengisian_terakhir' => 2,
+            'jumlah_pack_asli' => 1,
+            'jumlah_satuan_asli' => 25,
         ]);
         inv::create([
             'nama' => 'KAIL',
-            'jumlah_satuan' => 100,
-            'jumlah_pack' => 50,
-            'pengisian_terakhir' => 50,
+            'jumlah_satuan' => 50,
+            'jumlah_pack' => 2,
+            'pengisian_terakhir' => 2,
+            'jumlah_pack_asli' => 1,
+            'jumlah_satuan_asli' => 25,
+        ]);
+        inv::create([
+            'nama' => 'Baju',
+            'jumlah_satuan' => 50,
+            'jumlah_pack' => 2,
+            'pengisian_terakhir' => 2,
+            'jumlah_pack_asli' => 1,
+            'jumlah_satuan_asli' => 25,
         ]);
     }
 }

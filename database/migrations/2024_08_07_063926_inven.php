@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('nama');
             $table->integer('jumlah_pack');
             $table->integer('jumlah_satuan');
+            $table->integer('jumlah_pack_asli');
+            $table->integer('jumlah_satuan_asli');
             $table->integer('pengisian_terakhir');
             $table->timestamps();
         });

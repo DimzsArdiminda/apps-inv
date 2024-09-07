@@ -88,11 +88,17 @@ class InventarisController extends Controller
             'jumlah_satuan' => 'required',
             'jumlah_pack' => 'required',
         ]);
+
+        $bijian = $request->jumlah_satuan / $request->jumlah_pack;
+        $pack = $request->jumlah_satuan / $bijian;
+
         $data = new Inv();
         $data->nama = strtoupper($request->nama);
         $data->jumlah_satuan = $request->jumlah_satuan;
         $data->jumlah_pack = $request->jumlah_pack;
         $data->pengisian_terakhir = $request->jumlah_pack;
+        $data->jumlah_pack_asli = $pack;
+        $data->jumlah_satuan_asli = $bijian;
         $data->save();
 
         return redirect()->back()->with('success', 'Data berhasil ditambahkan');

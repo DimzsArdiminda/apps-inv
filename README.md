@@ -1,7 +1,7 @@
 To Do List:
 1. Dashboard : show alert sisa barang
 2. Inventaris : Pengurangan Manual, Form Update, Form Input, 
-4. Invoice : Perbarui halaman Invoice
+4. Invoice : Perbarui halaman Invoice, algoritma belum selesai
 
 
 

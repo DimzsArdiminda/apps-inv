@@ -88,6 +88,9 @@ class InventarisController extends Controller
         $getid->jumlah_satuan = $request->jumlah_satuan;
         $getid->jumlah_pack = $request->jumlah_pack;
         $getid->pengisian_terakhir = $request->jumlah_pack;
+        $getid->jumlah_pack_asli = $request->jumlah_pack_asli;
+        $getid->jumlah_satuan_asli = $request->jumlah_satuan_asli;
+        // dd($request->all());
         $getid->update();
 
         return redirect()->back()->with('success', 'Data berhasil diupdate');

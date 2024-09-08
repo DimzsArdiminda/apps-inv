@@ -30,6 +30,15 @@
                                 <label for="JumlahPcs" class="text-primary small">Jumlah (Pcs)</label>
                                 <input type="number" class="form-control form-control-user" id="JumlahPcs" name="jumlah_pack" placeholder="Masukkan Jumlah dalam Pcs" value="{{ $data->jumlah_pack }}">
                             </div>
+                            <hr>
+                            <div class="form-group">
+                                <label for="JumlahPcs" class="text-primary small">Jumlah (Pcs) Asli</label>
+                                <input type="number" class="form-control form-control-user" id="JumlahPcs1" name="jumlah_pack_asli" placeholder="Masukkan Jumlah dalam Pcs" value="{{ $data->jumlah_pack_asli }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="JumlahPcs" class="text-primary small">Jumlah (Pcs) Asli</label>
+                                <input type="number" class="form-control form-control-user" id="JumlahPcs2" name="jumlah_satuan_asli" placeholder="Masukkan Jumlah dalam Pcs" value="{{ $data->jumlah_satuan_asli }}">
+                            </div>
                             {{-- <div class="form-group"> --}}
                                 {{-- <label for="JumlahPcs" class="text-primary small">Jumlah (Pcs)</label> --}}
                                 <input type="hidden" class="form-control form-control-user" id="JumlahPcs" name="id" placeholder="Masukkan Jumlah dalam Pcs" value="{{ $data->id }}">

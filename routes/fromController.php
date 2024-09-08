@@ -38,6 +38,8 @@ Route::get('/reset-password', [PasswordResetController::class, 'showResetForm'])
 Route::put('/reset-password', [PasswordResetController::class, 'reset'])->name('password.updateByEmail');
 
 //  inventaris
+Route::post('api/dashboard/update', [InventarisController::class, 'updatePengurangan'])->name('update.barang.kurang')->middleware(['auth', 'verified']);
+Route::get('/dashboard/inventaris/{nama}', [InventarisController::class, 'kurang'])->name('index.kurang.barang')->middleware(['auth', 'verified']);
 Route::get('/dashboard/inventaris/', [InventarisController::class, 'index'])->name('index.inven')->middleware(['auth', 'verified']); // get all inventaris
 Route::post('/api/dashboard/inventaris-act-create/', [InventarisController::class, 'create'])->name('add.barang')->middleware(['auth', 'verified']); // create inventaris
 Route::get('/dashboard/inventaris/edit-barang/{id}', [InventarisController::class, 'indexEdit'])->name('update.barang')->middleware(['auth', 'verified']); // update inventaris

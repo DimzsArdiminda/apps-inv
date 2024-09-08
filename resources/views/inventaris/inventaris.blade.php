@@ -60,6 +60,9 @@
                             <a href="{{ route('index.tambah.barang', $inventory->id) }}" class="btn btn-info btn-sm">
                                 <i class="fas fa-plus-circle"></i>
                             </a>
+                            <a href="{{ route('index.kurang.barang', $inventory->nama) }}" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-minus-circle"></i>
+                            </a>
                             {{-- delete button with sweet alert --}}
                             <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ $inventory->id }})">
                                 <i class="fas fa-trash-alt"></i>

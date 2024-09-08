@@ -18,7 +18,13 @@
                             @csrf
                             <div class="form-group">
                                 <label for="NamaBarang" class="text-primary small">Nama Barang</label>
-                                <input type="text" class="form-control form-control-user @error('nama') is-invalid @enderror" id="NamaBarang" name="nama" placeholder="Masukkan Nama Barang" required>
+                                <select class="form-control form-control-user @error('nama') is-invalid @enderror" id="NamaBarang" name="nama" required>
+                                    <option value="" disabled selected>Pilih Nama Barang</option>
+                                    <option value="KERTAS">KERTAS</option>
+                                    <option value="KAIL">KAIL</option>
+                                    <option value="STOPPER">STOPPER</option>
+                                    <option value="TALI">TALI</option>
+                                </select>
                                 @error('nama')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -34,10 +40,10 @@
                                 <input type="number" class="form-control form-control-user" id="JumlahPcs" name="jumlah_pack" placeholder="Masukkan Jumlah dalam Pcs" required>
                             </div>
                             <hr>
-                            <button  class="btn btn-primary btn-lg px-5 rounded-pill" type="submit">
+                            <button class="btn btn-primary btn-lg px-5 rounded-pill" type="submit">
                                 Kirim
                             </button>
-                            <a href="{{ route('index.inven') }}" class=" btn btn-lg btn-danger shadow-sm rounded-pill" >
+                            <a href="{{ route('index.inven') }}" class=" btn btn-lg btn-danger shadow-sm rounded-pill">
                                 <i class="fas fa-door-open fa-sm text-white-50"></i> Kembali</a>
                         </form>
             

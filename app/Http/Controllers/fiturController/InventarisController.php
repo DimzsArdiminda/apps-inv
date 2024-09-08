@@ -12,6 +12,27 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class InventarisController extends Controller
 {
+    public function updatePengurangan(Request $request){
+        // dd($request->all());
+        $getid = Inv::where('id', $request->id)->first();
+        // dd($getid);
+        $getid->nama = $request->nama;
+        $getid->jumlah_satuan = $request->jumlah_satuan;
+        $getid->jumlah_pack = $request->jumlah_pack;
+        $getid->update();
+
+        return redirect()->back()->with('success', 'Data berhasil diupdate');
+    }
+    public function kurang($getNama) {
+        $data = Inv::where('nama', $getNama)->first();
+        return view('inventaris.pengurangan.index', ['data' => $data]);
+    }
+    // public function kurang($getNama) {
+    //     $data = Inv::where('nama', $getNama)->first();
+    //     // Simpan data dalam session
+    //     session()->put('data', $data);
+    //     return redirect('/dashboard/inventaris/');
+    // }
     public function indexTambahBarang(Request $request){
         $getid = Inv::find($request->id);
         // dd($getid);

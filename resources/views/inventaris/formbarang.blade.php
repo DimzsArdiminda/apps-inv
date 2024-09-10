@@ -23,6 +23,8 @@
                                 <option value="KAIL">KAIL</option>
                                 <option value="STOPPER">STOPPER</option>
                                 <option value="TALI">TALI</option>
+                                <option value="ID CARD">ID CARD</option>
+                                <option value="HOLDER">HOLDER</option>
                                 <option value="custom">Input Custom</option>
                             </select>
                             <input type="text" class="form-control form-control-user d-none mt-2 @error('nama') is-invalid @enderror" id="CustomNamaBarang" name="nama_custom" placeholder="Masukkan Nama Barang Custom">

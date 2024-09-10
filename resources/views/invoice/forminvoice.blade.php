@@ -21,11 +21,11 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="no_hp" class="text-primary small">No HP (opsional)</label>
-                            <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Format : +62812345678" >
+                            <input type="text" class="form-control" id="no_hp" name="no_hp" placeholder="Format : +62812345678">
                         </div>
                     </div>
 
-                    <!-- Radio Button for Lanyard / Non Lanyard -->
+                    <!-- Radio Button for Package Options -->
                     <div class="form-group">
                         <label class="text-primary small">Jenis Barang</label>
                         <div class="form-check">
@@ -33,12 +33,20 @@
                             <label class="form-check-label" for="lanyard">Lanyard</label>
                         </div>
                         <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jenis_barang" id="lanyard_id_card" value="Lanyard + ID Card" required>
+                            <label class="form-check-label" for="lanyard_id_card">Lanyard + ID Card</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jenis_barang" id="lanyard_id_card_holder" value="Lanyard + ID Card + Holder" required>
+                            <label class="form-check-label" for="lanyard_id_card_holder">Lanyard + ID Card + Holder</label>
+                        </div>
+                        <div class="form-check">
                             <input class="form-check-input" type="radio" name="jenis_barang" id="non_lanyard" value="Non Lanyard" required>
                             <label class="form-check-label" for="non_lanyard">Non Lanyard</label>
                         </div>
                     </div>
 
-                    <!-- Checkbox for Lanyard options -->
+                    <!-- Checkbox Options for Lanyard and Lanyard + ID Card + Holder -->
                     <div id="lanyardOptions" class="form-group" style="display:none;">
                         <label class="text-primary small">Paket Lanyard</label>
                         <div class="form-check">
@@ -53,28 +61,36 @@
                             <input class="form-check-input" type="checkbox" name="lanyard_options[]" id="lanyardKail" value="1" checked>
                             <label class="form-check-label" for="lanyardKail">Kail</label>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="lanyard_options[]" id="lanyardKertas" value="1" checked>
-                                    <label class="form-check-label" for="lanyardKertas">Kertas</label>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="lanyard_options[]" id="lanyardKertasDob" value="2">
-                                    <label class="form-check-label" for="lanyardKertasDob">Kertas Dobel</label>
-                                </div>
-                            </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="lanyard_options[]" id="lanyardKertas" value="1" checked>
+                            <label class="form-check-label" for="lanyardKertas">Kertas</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="lanyard_options[]" id="lanyardKertasDob" value="2">
+                            <label class="form-check-label" for="lanyardKertasDob">Kertas Dobel</label>
+                        </div>
+                        <div class="form-check" id="idCardOption" style="display:none;">
+                            <input class="form-check-input" type="checkbox" name="id_card" id="idCard" value="ID CARD" checked>
+                            <label class="form-check-label" for="idCard">ID Card</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="id_card2" id="idCard2" value="ID CARD 2">
+                            <label class="form-check-label" for="idCard2">ID Card 2</label>
+                        </div>
+                        <!-- Checkbox for Holder in Lanyard + ID Card + Holder package -->
+                        <div class="form-check" id="holderOption" style="display:none;">
+                            <input class="form-check-input" type="checkbox" name="holder" id="holder" value="HOLDER" checked>
+                            <label class="form-check-label" for="holder">Holder</label>
                         </div>
                     </div>
 
-                    <!-- Dropdown for Non Lanyard -->
+                    <!-- Non Lanyard Options -->
                     <div id="nonLanyardOptions" class="form-group" style="display:none;">
                         <label for="selectUser" class="text-primary small">Barang yang tersedia</label>
                         <select class="form-control" id="selectUser" name="barang" style="width: 100%;"></select>
                     </div>
 
+                    <!-- Quantity and Pricing -->
                     <div class="form-group row">
                         <div class="col-md-4 mb-3">
                             <label for="Jumlah" class="text-primary small">Jumlah</label>
@@ -82,18 +98,20 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="Harga" class="text-primary small">Harga</label>
-                            <!-- Initial input for price -->
                             <input type="number" class="form-control" id="Harga" name="harga" placeholder="Masukkan Harga Satuan" required>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="harga_pas" id="harga_pas" value="1" checked>
-                                <label class="form-check-label text-primary small" for="harga_pas">Harga Pas</label>
-                            </div>
+                    </div>
+
+                    <!-- Checkbox for "Harga Pas" -->
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="hargaPas" name="harga_pas">
+                            <label class="form-check-label" for="hargaPas">Harga Pas</label>
                         </div>
                     </div>
+
                     <hr>
-                    
+
                     <div class="form-group row">
                         <div class="col-md-6">
                             <button class="btn btn-primary btn-lg px-5 rounded-pill" type="submit">Kirim</button>
@@ -109,83 +127,56 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        // Show/Hide options based on radio selection
-        $('input[name="jenis_barang"]').on('change', function () {
-            if ($(this).val() === 'Lanyard') {
-                $('#lanyardOptions').show();
-                $('#nonLanyardOptions').hide();
-            } else {
-                $('#lanyardOptions').hide();
-                $('#nonLanyardOptions').show();
-            }
-        });
-
-        // Initialize Select2 for non-lanyard dropdown
+     $(document).ready(function(){
         $('#selectUser').select2({
-            placeholder: 'Masukkan Nama Barang',
-            ajax: {
-                url: '{{ route('select.user') }}',
-                dataType: 'json',
-                delay: 250,
-                processResults: function (data) {
-                    var formattedData = data.results.map(function (item) {
-                        return {
-                            id: item.nama,
-                            text: item.nama + ' - ' + item.jumlah_pack + ' pack - ' + item.jumlah_satuan + ' satuan'
-                        };
-                    });
-
+        placeholder: 'Masukkan Nama Barang',
+        ajax: {
+            url: '{{ route("select.user") }}',
+            dataType: 'json',
+            delay: 250,
+            processResults: function (data) {
+                var formattedData = data.results.map(function (item) {
                     return {
-                        results: formattedData
+                        id: item.nama,
+                        text: item.nama + ' - ' + item.jumlah_pack + ' pack - ' + item.jumlah_satuan + ' satuan'
                     };
-                },
-                cache: true
-            },
-            minimumInputLength: 3
-        });
-
-        // Logic for showing dropdown for price when quantity is between 1 and 10
-        $('#Jumlah').on('input', function () {
-            var quantity = $(this).val();
-
-            // If quantity is between 1 and 10, show the dropdown with suggestion
-            if (quantity >= 1 && quantity <= 10) {
-                $('#Harga').replaceWith(`
-                    <select class="form-control" id="Harga" name="harga" required>
-                        <option value="10000">10,000</option>
-                        <option value="custom">Masukkan Harga Kustom</option>
-                    </select>
-                `);
-                
-                // Add event listener for custom price input
-                $('#Harga').on('change', function () {
-                    if ($(this).val() === 'custom') {
-                        $('#Harga').replaceWith(`
-                            <input type="number" class="form-control" id="Harga" name="harga" placeholder="Masukkan Harga Satuan" required>
-                        `);
-                    }
                 });
-            } else {
-                // Revert back to the original input type number if outside the range
-                $('#Harga').replaceWith(`
-                    <input type="number" class="form-control" id="Harga" name="harga" placeholder="Masukkan Harga Satuan" required>
-                `);
-            }
-        });
 
-        // Logic for Kertas and Kertas Dobel checkboxes
-        $('#lanyardKertas').on('change', function () {
-            if ($(this).is(':checked')) {
-                $('#lanyardKertasDob').prop('checked', false);
-            }
-        });
-
-        $('#lanyardKertasDob').on('change', function () {
-            if ($(this).is(':checked')) {
-                $('#lanyardKertas').prop('checked', false);
-            }
-        });
+                return {
+                    results: formattedData
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 3
     });
+
+    // Handle mutual exclusivity between Kertas and Kertas Dobel
+    $('#lanyardKertas').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#lanyardKertasDob').prop('checked', false);
+        }
+    });
+
+    $('#lanyardKertasDob').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#lanyardKertas').prop('checked', false);
+        }
+    });
+
+    // Handle mutual exclusivity between ID Card and ID Card 2
+    $('#idCard').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#idCard2').prop('checked', false);
+        }
+    });
+
+    $('#idCard2').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#idCard').prop('checked', false);
+        }
+    });
+
+     })
 </script>
 @endsection

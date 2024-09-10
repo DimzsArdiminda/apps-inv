@@ -161,6 +161,10 @@
     <script src="{{ asset('js/demo/chart-area-demo.js') }}"></script>
 
     <script src="{{ asset('js/customchart.js') }}"></script>
+    
+    {{-- script pageForm --}}
+    <script src="{{ asset('js/customForm.js') }}"></script>
+
 
     {{-- select two --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>

@@ -222,7 +222,7 @@ class InvoiceController extends Controller
     }
     public function saveBarang(Request $request)
     {   
-        dd($request->all());
+        // dd($request->all());
         if($request->jenis_barang == 'Lanyard'){
             // dd($request->all());
             // 0 => tali | 1 => stopper | 2 => kail | 3 => kertas
@@ -741,7 +741,7 @@ class InvoiceController extends Controller
             ]);
 
         }else{
-            // pengurangan barang
+            // pengurangan barang non paket
             $inv = Inv::where('nama', $request->barang)->first();
             $a = $request->jumlah;
             $b = $inv->jumlah_pack;
@@ -761,16 +761,17 @@ class InvoiceController extends Controller
 
             // pengurangan pack
             $penguraganPack = $a % $BijiAsli;
-            $SelesihKurang = $a - $penguraganPack;
 
             if($penguraganPack == 0){
                 $jumlah_pack_baru = $b - 1;
             }else{
                 // pemblian lebih dari 25 
-                if($SelesihKurang == $BijiAsli){
+                if($penguraganPack != 0){
                     $jumlah_pack_baru = $b - 1;
+                    // dd($jumlah_pack_baru);
                 }else{
                     $jumlah_pack_baru = $b;
+                    // dd("sisa" . $jumlah_pack_baru);
                 }
             }
             

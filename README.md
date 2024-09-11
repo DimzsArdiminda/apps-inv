@@ -1,5 +1,6 @@
 To Do List:
-1. Invoice :  algoritma belum selesai, Backen form Invoice belum selesai
+1. Invoice : revisi tampilan invoice
+2. Revisi form
 
 
 

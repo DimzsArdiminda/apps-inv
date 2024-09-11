@@ -416,7 +416,11 @@ class InvoiceController extends Controller
             $sisaStopper = $jumlahSTOPPER - $getStopper;
             $sisaKail = $jumlahKAIL - $getKail;
             $sisaKertas = $jumlahKERTAS - $getKertas;
-            $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
+            if($request->id_card == "ID CARD 2"){
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+            }else{
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
+            }
 
             // dd($sisaTali, $sisaStopper,  $sisaKail, $sisaKertas,);
 
@@ -593,7 +597,11 @@ class InvoiceController extends Controller
             $sisaStopper = $jumlahSTOPPER - $getStopper;
             $sisaKail = $jumlahKAIL - $getKail;
             $sisaKertas = $jumlahKERTAS - $getKertas;
-            $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
+            if($request->id_card == "ID CARD 2"){
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+            }else{
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
+            }
             $sisaHolder = $jumlahHolder - $request->jumlah;
 
             // dd($sisaTali, $sisaStopper,  $sisaKail, $sisaKertas,);
@@ -786,7 +794,7 @@ class InvoiceController extends Controller
             ]);
         }
 
-        
+        // dd($request->all());
         $harga_total = $request->harga * $request->jumlah;
         $data = new Invoice();
         // data diri pembeli
@@ -799,6 +807,7 @@ class InvoiceController extends Controller
         $data->nama_barang = $jenisBarang;
         $data->jumlah_barang = $request->jumlah;
         $data->harga_barang = $request->harga;
+        // jika harga_pass on maka harga yang diambil adalah harga yang diinputkan
         $HargaPass = $request->harga_pas == "on" ? $request->harga : $harga_total;
         $data->total_harga = $HargaPass;
         $data->status = 'dp';

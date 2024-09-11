@@ -1,5 +1,5 @@
 To Do List:
-1. Staging Form 2 Invoice
+1. Algoritma cetak invoice
 2. Revisi tampilan invoice
 
 

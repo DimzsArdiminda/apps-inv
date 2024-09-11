@@ -1,6 +1,6 @@
 To Do List:
-1. Invoice : revisi tampilan invoice
-2. Revisi form
+1. Staging Form 2 Invoice
+2. Revisi tampilan invoice
 
 
 

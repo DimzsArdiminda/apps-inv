@@ -92,34 +92,51 @@ class InvoiceController extends Controller
     {   
         // dd($request->all());
         if($request->jenis_barang == 'Lanyard') {
-            // Perhitungan total barang yang digunakan
+             // dd($request->all());
+            // 0 => tali | 1 => stopper | 2 => kail | 3 => kertas
             $getTali = isset($request->lanyard_options[0]) ? $request->lanyard_options[0] * $request->jumlah : 0;
             $getStopper = isset($request->lanyard_options[1]) ? $request->lanyard_options[1] * $request->jumlah : 0;
             $getKail = isset($request->lanyard_options[2]) ? $request->lanyard_options[2] * $request->jumlah : 0;
             $getKertas = isset($request->lanyard_options[3]) ? $request->lanyard_options[3] * $request->jumlah : 0;
-    
+            $jenisBarang = $request->jenis_barang;
+
+            // dd($getTali, $getStopper, $getKail, $getKertas);
+
             $getBarang = Inv::all();
-    
-            // Mendapatkan jumlah barang di database
+            // dd($getBarang);
+            // tali
             $tali = $getBarang->where('nama', 'TALI')->first();
             $jumlahTali = $tali->jumlah_satuan;
-    
-            $stopper = $getBarang->where('nama', 'STOPPER')->first();
-            $jumlahStopper = $stopper->jumlah_satuan;
-    
-            $kail = $getBarang->where('nama', 'KAIL')->first();
-            $jumlahKail = $kail->jumlah_satuan;
-    
-            $kertas = $getBarang->where('nama', 'KERTAS')->first();
-            $jumlahKertas = $kertas->jumlah_satuan;
-    
-            // Menghitung sisa barang setelah pembelian
+            $BijiAsli = $tali->jumlah_satuan_asli;
+            
+            // STOPPER
+            $STOPPER = $getBarang->where('nama', 'STOPPER')->first();
+            $jumlahSTOPPER = $STOPPER->jumlah_satuan;
+            $BijiAsliStopper = $STOPPER->jumlah_satuan_asli;
+
+
+            // KERTAS
+            $KERTAS = $getBarang->where('nama', 'KERTAS')->first();
+            $jumlahKERTAS = $KERTAS->jumlah_satuan;
+            $BijiAsliKertas = $KERTAS->jumlah_satuan_asli;
+
+            // STOPPER
+            $KAIL = $getBarang->where('nama', 'KAIL')->first();
+            $jumlahKAIL = $KAIL->jumlah_satuan;
+            $BijiAsliKail = $KAIL->jumlah_satuan_asli;
+
+            // dd($jumlahTali, $jumlahSTOPPER, $jumlahKERTAS, $jumlahKAIL);
+            // dd($KAIL, $STOPPER, $KERTAS, $tali);
+
+            // pengurangan barang
             $sisaTali = $jumlahTali - $getTali;
-            $sisaStopper = $jumlahStopper - $getStopper;
-            $sisaKail = $jumlahKail - $getKail;
-            $sisaKertas = $jumlahKertas - $getKertas;
-    
-            // Validasi barang jika jumlahnya kurang dari minimum stok
+            $sisaStopper = $jumlahSTOPPER - $getStopper;
+            $sisaKail = $jumlahKAIL - $getKail;
+            $sisaKertas = $jumlahKERTAS - $getKertas;
+
+            // dd($sisaTali, $sisaStopper,  $sisaKail, $sisaKertas,);
+
+            // jika barang <= 5 kembalikan request dengan alert 
             $barangKurang = [];
             if($sisaTali <= 5){
                 $barangKurang[] = 'TALI';
@@ -127,93 +144,538 @@ class InvoiceController extends Controller
             if($sisaStopper <= 5){
                 $barangKurang[] = 'STOPPER';
             }
-            if($sisaKail <= 5){
-                $barangKurang[] = 'KAIL';
-            }
             if($sisaKertas <= 5){
                 $barangKurang[] = 'KERTAS';
             }
-    
+            if($sisaKail <= 5){
+                $barangKurang[] = 'KAIL';
+            }
+
             if(!empty($barangKurang)){
                 $barangKurangStr = implode(', ', $barangKurang);
                 return redirect()->back()->with('error', 'Barang ' . $barangKurangStr . ' tidak cukup, tambahkan persediaan barang');
             }
-    
-            // Menghitung sisa pack dan satuan setelah pembelian
-            $jumlahPackTali = $getTali % $tali->jumlah_pack == 0 ? $tali->jumlah_pack - 1 : $tali->jumlah_pack;
-            $jumlahPackStopper = $getStopper % $stopper->jumlah_pack == 0 ? $stopper->jumlah_pack - 1 : $stopper->jumlah_pack;
-            $jumlahPackKail = $getKail % $kail->jumlah_pack == 0 ? $kail->jumlah_pack - 1 : $kail->jumlah_pack;
-            $jumlahPackKertas = $getKertas % $kertas->jumlah_pack == 0 ? $kertas->jumlah_pack - 1 : $kertas->jumlah_pack;
-    
-            // Update data ke database
+
+
+            // pengurangan pack 
+            // tali
+            $penguranganPackTali =  $BijiAsli;
+            $pengaliTali = 1;
+            while($penguranganPackTali * $pengaliTali <= $sisaTali){
+                $pengaliTali++;
+            }
+
+            // stopper
+            $penguranganPackStopper = $BijiAsliStopper;
+            $pengaliStopper = 1;
+            while($penguranganPackStopper * $pengaliStopper <= $sisaStopper){
+                $pengaliStopper++;
+            }
+
+            // kertas
+            $penguranganPackKertas = $BijiAsliKertas;
+            $pengaliKertas = 1;
+            while($penguranganPackKertas * $pengaliKertas <= $sisaKertas){
+                $pengaliKertas++;
+            }
+
+            $penguranganPackKail = $BijiAsliKail;
+            $pengaliKail = 1;
+            while($penguranganPackKail * $pengaliKail <= $sisaKail){
+                $pengaliKail++;
+            }
+            // dd($penguranganPackTali, $penguranganPackStopper, $penguranganPackKertas, $penguranganPackKail);
+
+            // Tali
+            if($penguranganPackTali % $sisaTali == 0){
+                $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_tali = $tali->jumlah_pack;
+            }
+
+            // Stopper
+            if($penguranganPackStopper % $sisaStopper == 0){
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
+            }
+
+
+            // Kertas
+            if($penguranganPackKertas % $sisaKertas == 0){
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
+            }
+
+            // Kail
+            if($penguranganPackKail % $sisaKail == 0){
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
+            }
+            // dd($jumlah_pack_baru_tali, $jumlah_pack_baru_stopper, $jumlah_pack_baru_kertas, $jumlah_pack_baru_kail);
+
+            // update data tali, stopper, kertas and kail
             $updateTali = Inv::where('nama', 'TALI')->update([
-                'jumlah_pack' => $jumlahPackTali,
+                'jumlah_pack' => $jumlah_pack_baru_tali,
                 'jumlah_satuan' => $sisaTali
             ]);
             $updateStopper = Inv::where('nama', 'STOPPER')->update([
-                'jumlah_pack' => $jumlahPackStopper,
+                'jumlah_pack' => $jumlah_pack_baru_stopper,
                 'jumlah_satuan' => $sisaStopper
             ]);
-            $updateKail = Inv::where('nama', 'KAIL')->update([
-                'jumlah_pack' => $jumlahPackKail,
-                'jumlah_satuan' => $sisaKail
-            ]);
             $updateKertas = Inv::where('nama', 'KERTAS')->update([
-                'jumlah_pack' => $jumlahPackKertas,
+                'jumlah_pack' => $jumlah_pack_baru_kertas,
                 'jumlah_satuan' => $sisaKertas
             ]);
+            $updateKail = Inv::where('nama', 'KAIL')->update([
+                'jumlah_pack' => $jumlah_pack_baru_kail,
+                'jumlah_satuan' => $sisaKail
+            ]);
+        }else if($request->jenis_barang == 'Lanyard + ID Card'){
+            // dd($request->all());
+            // 0 => tali | 1 => stopper | 2 => kail | 3 => kertas 
+            $getTali = isset($request->lanyard_options[0]) ? $request->lanyard_options[0] * $request->jumlah : 0;
+            $getStopper = isset($request->lanyard_options[1]) ? $request->lanyard_options[1] * $request->jumlah : 0;
+            $getKail = isset($request->lanyard_options[2]) ? $request->lanyard_options[2] * $request->jumlah : 0;
+            $getKertas = isset($request->lanyard_options[3]) ? $request->lanyard_options[3] * $request->jumlah : 0;
+            $getIDCARD = $request->id_card;
+            $jenisBarang = $request->jenis_barang;
+
+            // dd($getTali, $getStopper, $getKail, $getKertas);
+
+            $getBarang = Inv::all();
+            // dd($getBarang);
+            // tali
+            $tali = $getBarang->where('nama', 'TALI')->first();
+            $jumlahTali = $tali->jumlah_satuan;
+            $BijiAsli = $tali->jumlah_satuan_asli;
+            
+            // STOPPER
+            $STOPPER = $getBarang->where('nama', 'STOPPER')->first();
+            $jumlahSTOPPER = $STOPPER->jumlah_satuan;
+            $BijiAsliStopper = $STOPPER->jumlah_satuan_asli;
+
+
+            // KERTAS
+            $KERTAS = $getBarang->where('nama', 'KERTAS')->first();
+            $jumlahKERTAS = $KERTAS->jumlah_satuan;
+            $BijiAsliKertas = $KERTAS->jumlah_satuan_asli;
+
+            // STOPPER
+            $KAIL = $getBarang->where('nama', 'KAIL')->first();
+            $jumlahKAIL = $KAIL->jumlah_satuan;
+            $BijiAsliKail = $KAIL->jumlah_satuan_asli;
+
+            // ID CARD
+            // dd($getIDCARD);
+            $IDCARD = $getBarang->where('nama',"ID CARD")->first();
+            $jumlahIDCARD = $IDCARD->jumlah_satuan;
+            $BijiAsliIDCARD = $IDCARD->jumlah_satuan_asli;
+
+
+            // dd($jumlahTali, $jumlahSTOPPER, $jumlahKERTAS, $jumlahKAIL);
+            // dd($KAIL, $STOPPER, $KERTAS, $tali);
+
+            // pengurangan barang
+            $sisaTali = $jumlahTali - $getTali;
+            $sisaStopper = $jumlahSTOPPER - $getStopper;
+            $sisaKail = $jumlahKAIL - $getKail;
+            $sisaKertas = $jumlahKERTAS - $getKertas;
+            if($request->id_card == "ID CARD 2"){
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+            }else{
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
+            }
+
+            // dd($sisaTali, $sisaStopper,  $sisaKail, $sisaKertas,);
+
+            // jika barang <= 5 kembalikan request dengan alert 
+            $barangKurang = [];
+            if($sisaTali <= 5){
+                $barangKurang[] = 'TALI';
+            }
+            if($sisaStopper <= 5){
+                $barangKurang[] = 'STOPPER';
+            }
+            if($sisaKertas <= 5){
+                $barangKurang[] = 'KERTAS';
+            }
+            if($sisaKail <= 5){
+                $barangKurang[] = 'KAIL';
+            }
+            if($sisaIDCARD <= 5){
+                $barangKurang[] = 'ID CARD';
+            }
+
+            if(!empty($barangKurang)){
+                $barangKurangStr = implode(', ', $barangKurang);
+                return redirect()->back()->with('error', 'Barang ' . $barangKurangStr . ' tidak cukup, tambahkan persediaan barang');
+            }
+
+
+            // pengurangan pack 
+            // tali
+            $penguranganPackTali =  $BijiAsli;
+            $pengaliTali = 1;
+            while($penguranganPackTali * $pengaliTali <= $sisaTali){
+                $pengaliTali++;
+            }
+
+            // stopper
+            $penguranganPackStopper = $BijiAsliStopper;
+            $pengaliStopper = 1;
+            while($penguranganPackStopper * $pengaliStopper <= $sisaStopper){
+                $pengaliStopper++;
+            }
+
+            // kertas
+            $penguranganPackKertas = $BijiAsliKertas;
+            $pengaliKertas = 1;
+            while($penguranganPackKertas * $pengaliKertas <= $sisaKertas){
+                $pengaliKertas++;
+            }
+
+            $penguranganPackKail = $BijiAsliKail;
+            $pengaliKail = 1;
+            while($penguranganPackKail * $pengaliKail <= $sisaKail){
+                $pengaliKail++;
+            }
+
+            $penguranganPackIDCARD = $BijiAsliIDCARD;
+            $pengaliIDCARD = 1;
+            while($penguranganPackIDCARD * $pengaliIDCARD <= $sisaIDCARD){
+                $pengaliIDCARD++;
+            }
+
+            // dd($SelesihKurangTali, $SelesihKurangStopper, $SelesihKurangKertas, $SelesihKurangKail);
+
+            // Tali
+            if($penguranganPackTali % $sisaTali == 0){
+                $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_tali = $tali->jumlah_pack;
+            }
+
+            // Stopper
+            if($penguranganPackStopper % $sisaStopper == 0){
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
+            }
+
+
+            // Kertas
+            if($penguranganPackKertas % $sisaKertas == 0){
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
+            }
+
+            // Kail
+            if($penguranganPackKail % $sisaKail == 0){
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
+            }
+
+            // ID CARD
+            if($penguranganPackIDCARD % $sisaIDCARD == 0){
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack;
+            }
+
+            // dd($jumlah_pack_baru_tali, $jumlah_pack_baru_stopper, $jumlah_pack_baru_kertas, $jumlah_pack_baru_kail);
+
+            // update data tali, stopper, kertas and kail
+            $updateTali = Inv::where('nama', 'TALI')->update([
+                'jumlah_pack' => $jumlah_pack_baru_tali,
+                'jumlah_satuan' => $sisaTali
+            ]);
+            $updateStopper = Inv::where('nama', 'STOPPER')->update([
+                'jumlah_pack' => $jumlah_pack_baru_stopper,
+                'jumlah_satuan' => $sisaStopper
+            ]);
+            $updateKertas = Inv::where('nama', 'KERTAS')->update([
+                'jumlah_pack' => $jumlah_pack_baru_kertas,
+                'jumlah_satuan' => $sisaKertas
+            ]);
+            $updateKail = Inv::where('nama', 'KAIL')->update([
+                'jumlah_pack' => $jumlah_pack_baru_kail,
+                'jumlah_satuan' => $sisaKail
+            ]);
+            $updateIDCARD = Inv::where("nama", "ID CARD")->update([
+                'jumlah_pack' => $jumlah_pack_baru_IDCard,
+                'jumlah_satuan' => $sisaIDCARD
+            ]);
+
+        }else if($request->jenis_barang == 'Lanyard + ID Card + Holder'){
+            // dd($request->all());
+            // 0 => tali | 1 => stopper | 2 => kail | 3 => kertas 
+            $getTali = isset($request->lanyard_options[0]) ? $request->lanyard_options[0] * $request->jumlah : 0;
+            $getStopper = isset($request->lanyard_options[1]) ? $request->lanyard_options[1] * $request->jumlah : 0;
+            $getKail = isset($request->lanyard_options[2]) ? $request->lanyard_options[2] * $request->jumlah : 0;
+            $getKertas = isset($request->lanyard_options[3]) ? $request->lanyard_options[3] * $request->jumlah : 0;
+            $jenisBarang = $request->jenis_barang;
+
+            // dd($getTali, $getStopper, $getKail, $getKertas);
+
+            $getBarang = Inv::all();
+            // dd($getBarang);
+            // tali
+            $tali = $getBarang->where('nama', 'TALI')->first();
+            $jumlahTali = $tali->jumlah_satuan;
+            $BijiAsli = $tali->jumlah_satuan_asli;
+            
+            // STOPPER
+            $STOPPER = $getBarang->where('nama', 'STOPPER')->first();
+            $jumlahSTOPPER = $STOPPER->jumlah_satuan;
+            $BijiAsliStopper = $STOPPER->jumlah_satuan_asli;
+
+
+            // KERTAS
+            $KERTAS = $getBarang->where('nama', 'KERTAS')->first();
+            $jumlahKERTAS = $KERTAS->jumlah_satuan;
+            $BijiAsliKertas = $KERTAS->jumlah_satuan_asli;
+
+            // STOPPER
+            $KAIL = $getBarang->where('nama', 'KAIL')->first();
+            $jumlahKAIL = $KAIL->jumlah_satuan;
+            $BijiAsliKail = $KAIL->jumlah_satuan_asli;
+
+            // ID CARD
+            $IDCARD = $getBarang->where('nama', 'ID CARD')->first();
+            $jumlahIDCARD = $IDCARD->jumlah_satuan;
+            $BijiAsliIDCARD = $IDCARD->jumlah_satuan_asli;
+
+            $holder = $getBarang->where('nama', 'HOLDER')->first();
+            $jumlahHolder = $holder->jumlah_satuan;
+            $bijiAsliHolder = $holder->jumlah_satuan_asli;
+
+
+
+            // dd($jumlahTali, $jumlahSTOPPER, $jumlahKERTAS, $jumlahKAIL);
+            // dd($KAIL, $STOPPER, $KERTAS, $tali);
+
+            // pengurangan barang
+            $sisaTali = $jumlahTali - $getTali;
+            $sisaStopper = $jumlahSTOPPER - $getStopper;
+            $sisaKail = $jumlahKAIL - $getKail;
+            $sisaKertas = $jumlahKERTAS - $getKertas;
+            if($request->id_card == "ID CARD 2"){
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+            }else{
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
+            }
+            $sisaHolder = $jumlahHolder - $request->jumlah;
+
+            // dd($sisaTali, $sisaStopper,  $sisaKail, $sisaKertas,);
+
+            // jika barang <= 5 kembalikan request dengan alert 
+            $barangKurang = [];
+            if($sisaTali <= 5){
+                $barangKurang[] = 'TALI';
+            }
+            if($sisaStopper <= 5){
+                $barangKurang[] = 'STOPPER';
+            }
+            if($sisaKertas <= 5){
+                $barangKurang[] = 'KERTAS';
+            }
+            if($sisaKail <= 5){
+                $barangKurang[] = 'KAIL';
+            }
+            if($sisaIDCARD <= 5){
+                $barangKurang[] = 'ID CARD';
+            }
+            if($sisaHolder <= 5){
+                $barangKurang[] = 'HOLDER';
+            }
+
+            if(!empty($barangKurang)){
+                $barangKurangStr = implode(', ', $barangKurang);
+                return redirect()->back()->with('error', 'Barang ' . $barangKurangStr . ' tidak cukup, tambahkan persediaan barang');
+            }
+
+
+            // pengurangan pack 
+            // tali
+            $penguranganPackTali =  $BijiAsli;
+            $pengaliTali = 1;
+            while($penguranganPackTali * $pengaliTali <= $sisaTali){
+                $pengaliTali++;
+            }
+
+            // stopper
+            $penguranganPackStopper = $BijiAsliStopper;
+            $pengaliStopper = 1;
+            while($penguranganPackStopper * $pengaliStopper <= $sisaStopper){
+                $pengaliStopper++;
+            }
+
+            // kertas
+            $penguranganPackKertas = $BijiAsliKertas;
+            $pengaliKertas = 1;
+            while($penguranganPackKertas * $pengaliKertas <= $sisaKertas){
+                $pengaliKertas++;
+            }
+
+            $penguranganPackKail = $BijiAsliKail;
+            $pengaliKail = 1;
+            while($penguranganPackKail * $pengaliKail <= $sisaKail){
+                $pengaliKail++;
+            }
+
+            $penguranganPackIDCARD = $BijiAsliIDCARD;
+            $pengaliIDCARD = 1;
+            while($penguranganPackIDCARD * $pengaliIDCARD <= $sisaIDCARD){
+                $pengaliIDCARD++;
+            }
+
+            $penguranganPackHolder = $bijiAsliHolder;
+            $pengaliHolder = 1;
+            while($penguranganPackHolder * $pengaliHolder <= $sisaHolder){
+                $pengaliHolder++;
+            }
+
+            // dd($penguranganPackTali, $penguranganPackStopper, $penguranganPackKertas, $penguranganPackKail);
 
             
+            // Tali
+            if($penguranganPackTali % $sisaTali == 0){
+                $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_tali = $tali->jumlah_pack;
+            }
+
+            // Stopper
+            if($penguranganPackStopper % $sisaStopper == 0){
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
+            }
+
+
+            // Kertas
+            if($penguranganPackKertas % $sisaKertas == 0){
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
+            }
+
+            // Kail
+            if($penguranganPackKail % $sisaKail == 0){
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
+            }
+
+            // ID CARD
+            if($penguranganPackIDCARD % $sisaIDCARD == 0){
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack;
+            }
+
+            // Holder
+            if($penguranganPackHolder % $sisaHolder == 0){
+                $jumlah_pack_baru_Holder = $holder->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_Holder = $holder->jumlah_pack;
+            }
+
+            // dd($jumlah_pack_baru_tali, $jumlah_pack_baru_stopper, $jumlah_pack_baru_kertas, $jumlah_pack_baru_kail);
+
+            // update data tali, stopper, kertas and kail
+            $updateTali = Inv::where('nama', 'TALI')->update([
+                'jumlah_pack' => $jumlah_pack_baru_tali,
+                'jumlah_satuan' => $sisaTali
+            ]);
+            $updateStopper = Inv::where('nama', 'STOPPER')->update([
+                'jumlah_pack' => $jumlah_pack_baru_stopper,
+                'jumlah_satuan' => $sisaStopper
+            ]);
+            $updateKertas = Inv::where('nama', 'KERTAS')->update([
+                'jumlah_pack' => $jumlah_pack_baru_kertas,
+                'jumlah_satuan' => $sisaKertas
+            ]);
+            $updateKail = Inv::where('nama', 'KAIL')->update([
+                'jumlah_pack' => $jumlah_pack_baru_kail,
+                'jumlah_satuan' => $sisaKail
+            ]);
+            $updateIDCARD = Inv::where("nama", "ID CARD")->update([
+                'jumlah_pack' => $jumlah_pack_baru_IDCard,
+                'jumlah_satuan' => $sisaIDCARD
+            ]);
+            $updateHolder = Inv::where("nama", "HOLDER")->update([
+                'jumlah_pack' => $jumlah_pack_baru_Holder,
+                'jumlah_satuan' => $sisaHolder
+            ]);
+
         }else{
-            // Dapatkan data inventaris berdasarkan nama barang
+           // pengurangan barang non paket
             $inv = Inv::where('nama', $request->barang)->first();
+            $a = $request->jumlah;
+            $b = $inv->jumlah_pack;
+            $c = $inv->jumlah_satuan;
+            $BijiAsli = $inv->jumlah_satuan_asli;
+            $PackAsli = $inv->jumlah_pack_asli;
+            $jenisBarang = $request->jenis_barang;
 
-            // Jumlah yang diminta oleh pengguna
-            $jumlahDiminta = $request->jumlah;
+            // pengurangan satuan
+            $sisa = $c - $a;
+            // dd($sisa);
 
-            // Jumlah total satuan yang ada
-            $jumlahSatuan = $inv->jumlah_satuan;
-
-            // Jumlah pack yang tersedia
-            $jumlahPack = $inv->jumlah_pack;
-
-            // Menghitung satuan per pack
-            $satuanPerPack = $jumlahSatuan / $jumlahPack;
-
-            // Mengurangi satuan berdasarkan jumlah yang diminta
-            $sisaSatuan = $jumlahSatuan - $jumlahDiminta;
-
-            // Jika sisa satuan menjadi negatif, artinya jumlah yang diminta melebihi jumlah yang tersedia
-            if ($sisaSatuan < 0) {
+            // pengurangan barang
+            if( $sisa <= 0){
                 return redirect()->back()->with('error','Barang tidak cukup, tambahkan persediaan barang');
             }
 
-            // Mengurangi jumlah pack jika ada pack yang habis terpakai
-            if ($jumlahDiminta >= $satuanPerPack) {
-                $packTerpakai = floor($jumlahDiminta / $satuanPerPack);
-                $jumlahPackBaru = max(0, $jumlahPack - $packTerpakai);
-            } else {
-                $jumlahPackBaru = $jumlahPack;
+            // pengurangan pack
+            $kelipatanBarang = $BijiAsli; // Inisialisasi kelipatan
+            $pengali = 1; // Mulai dengan pengali 1
+            while ($kelipatanBarang * $pengali <= $sisa) {
+                $pengali++; // Tingkatkan pengali
             }
 
-            // Perbarui data inventaris dengan jumlah pack dan satuan yang baru
+            $kelipatanBarang = $BijiAsli * ($pengali - 1); 
+
+            // dd("masuk : " . $a, "Kelipatan: " . $kelipatanBarang  , " sisa: " . $sisa);
+
+            // dd($penguraganPack);
+
+            // pemblian lebih dari 25 
+            if($kelipatanBarang % $sisa == 0 ){
+                $jumlah_pack_baru = $b - 1;
+                // dd("Test 2: ".$jumlah_pack_baru, $sisa, $a);
+            }else{
+                $jumlah_pack_baru = $b;
+                // dd("Test 3: ".$jumlah_pack_baru , $sisa, $a);
+            }
+
             $inv->update([
-                'jumlah_pack' => $jumlahPackBaru,
-                'jumlah_satuan' => $sisaSatuan
+                'jumlah_satuan' => $sisa,
+                'jumlah_pack' => $jumlah_pack_baru,
             ]);
         }
 
         // Menyimpan data invoice
-        $hargaTotal = $request->harga * $request->jumlah;
+        // dd($request->all());
+        $harga_total = $request->harga * $request->jumlah;
         $data = new Invoice();
+        // data diri pembeli
         $data->nama = $request->nama;
         $data->no_hp = $request->no_hp;
+
         $data->invoice_number = $request->kode;
-        $jenisBarang = $request->jenis_barang == "Lanyard" ? 'Lanyard' : $request->barang;
+
         $data->nama_barang = $jenisBarang;
         $data->jumlah_barang = $request->jumlah;
         $data->harga_barang = $request->harga;
-        $HargaPass = $request->harga_pas == 1 ? $request->harga : $hargaTotal;
+        // jika harga_pass on maka harga yang diambil adalah harga yang diinputkan
+        $HargaPass = $request->harga_pas == "on" ? $request->harga : $harga_total;
         $data->total_harga = $HargaPass;
         $data->status = 'dp';
         $data->save();

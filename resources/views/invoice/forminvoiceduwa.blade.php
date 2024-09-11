@@ -81,8 +81,8 @@
                             <input class="form-check-input" type="checkbox" name="id_card" id="idCard" value="ID CARD" checked>
                             <label class="form-check-label" for="idCard">ID Card</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="id_card2" id="idCard2" value="ID CARD 2">
+                        <div class="form-check" id="idCardOption2" style="display:none;">
+                            <input class="form-check-input" type="checkbox" name="id_card" id="idCard2" value="ID CARD 2">
                             <label class="form-check-label" for="idCard2">ID Card 2</label>
                         </div>
                         <!-- Checkbox for Holder in Lanyard + ID Card + Holder package -->

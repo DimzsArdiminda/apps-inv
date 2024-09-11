@@ -760,10 +760,7 @@ class InvoiceController extends Controller
             }
 
             // pengurangan pack
-            $penguraganPack = $a % $BijiAsli;
-
-
-
+            $penguraganPack = $a % $BijiAsli; // PENGURANGAN 1 PACK LANGSUNG
             $kelipatanBarang = $BijiAsli; // Inisialisasi kelipatan
             $pengali = 1; // Mulai dengan pengali 1
             while ($kelipatanBarang * $pengali <= $sisa) {
@@ -776,18 +773,13 @@ class InvoiceController extends Controller
 
             // dd($penguraganPack);
 
-            if($penguraganPack == 0){
+            // pemblian lebih dari 25 
+            if($kelipatanBarang % $sisa == 0 ){
                 $jumlah_pack_baru = $b - 1;
-                // dd("Test 1: ".$jumlah_pack_baru , $sisa);
+                dd("Test 2: ".$jumlah_pack_baru, $sisa, $a);
             }else{
-                // pemblian lebih dari 25 
-                if($kelipatanBarang % $sisa == 0 ){
-                    $jumlah_pack_baru = $b - 1;
-                    // dd("Test 2: ".$jumlah_pack_baru, $sisa);
-                }else{
-                    $jumlah_pack_baru = $b;
-                    // dd("Test 3: ".$jumlah_pack_baru , $sisa);
-                }
+                $jumlah_pack_baru = $b;
+                dd("Test 3: ".$jumlah_pack_baru , $sisa, $a);
             }
             
             $inv->update([

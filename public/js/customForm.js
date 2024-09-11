@@ -7,17 +7,18 @@ $(document).ready(function () {
             $('#idCardOption').hide();
             $('#idCard2Option').hide();
             $('#holderOption').hide();
+            $('#idCardOption2').hide();
             $('#nonLanyardOptions').hide();
         } else if ($(this).val() === 'Lanyard + ID Card') {
             $('#lanyardOptions').show();
             $('#idCardOption').show();
-            $('#idCard2Option').show();
+            $('#idCardOption2').show();
             $('#holderOption').hide();
             $('#nonLanyardOptions').hide();
         } else if ($(this).val() === 'Lanyard + ID Card + Holder') {
             $('#lanyardOptions').show();
             $('#idCardOption').show();
-            $('#idCard2Option').show();
+            $('#idCardOption2').show();
             $('#holderOption').show();
             $('#nonLanyardOptions').hide();
         } else {

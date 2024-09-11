@@ -290,65 +290,61 @@ class InvoiceController extends Controller
 
 
             // pengurangan pack 
-            $penguranganPackTali = $getTali % $BijiAsli;
-            $penguranganPackStopper = $getStopper % $BijiAsliStopper;
-            $penguranganPackKertas = $getKertas % $BijiAsliKertas;
-            $penguranganPackKail = $getKail % $BijiAsliKail;
+            // tali
+            $penguranganPackTali =  $BijiAsli;
+            $pengaliTali = 1;
+            while($penguranganPackTali * $pengaliTali <= $sisaTali){
+                $pengaliTali++;
+            }
+
+            // stopper
+            $penguranganPackStopper = $BijiAsliStopper;
+            $pengaliStopper = 1;
+            while($penguranganPackStopper * $pengaliStopper <= $sisaStopper){
+                $pengaliStopper++;
+            }
+
+            // kertas
+            $penguranganPackKertas = $BijiAsliKertas;
+            $pengaliKertas = 1;
+            while($penguranganPackKertas * $pengaliKertas <= $sisaKertas){
+                $pengaliKertas++;
+            }
+
+            $penguranganPackKail = $BijiAsliKail;
+            $pengaliKail = 1;
+            while($penguranganPackKail * $pengaliKail <= $sisaKail){
+                $pengaliKail++;
+            }
             // dd($penguranganPackTali, $penguranganPackStopper, $penguranganPackKertas, $penguranganPackKail);
 
-            $SelesihKurangTali = $getTali - $penguranganPackTali;
-            $SelesihKurangStopper = $getStopper - $penguranganPackStopper;
-            $SelesihKurangKertas = $getKertas - $penguranganPackKertas;
-            $SelesihKurangKail = $getKail - $penguranganPackKail;
-
-            // dd($SelesihKurangTali, $SelesihKurangStopper, $SelesihKurangKertas, $SelesihKurangKail);
-
             // Tali
-            if($penguranganPackTali == 0){
+            if($penguranganPackTali % $sisaTali == 0){
                 $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangTali == $BijiAsli){
-                    $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_tali = $tali->jumlah_pack;
-                }
+                $jumlah_pack_baru_tali = $tali->jumlah_pack;
             }
 
             // Stopper
-            if($penguranganPackStopper == 0){
+            if($penguranganPackStopper % $sisaStopper == 0){
                 $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangStopper == $BijiAsliStopper){
-                    $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
-                }
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
             }
 
+
             // Kertas
-            if($penguranganPackKertas == 0){
+            if($penguranganPackKertas % $sisaKertas == 0){
                 $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangKertas == $BijiAsliKertas){
-                    $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
-                }
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
             }
 
             // Kail
-            if($penguranganPackKail == 0){
+            if($penguranganPackKail % $sisaKail == 0){
                 $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangKail == $BijiAsliKail){
-                    $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
-                }
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
             }
             // dd($jumlah_pack_baru_tali, $jumlah_pack_baru_stopper, $jumlah_pack_baru_kertas, $jumlah_pack_baru_kail);
 
@@ -377,6 +373,7 @@ class InvoiceController extends Controller
             $getStopper = isset($request->lanyard_options[1]) ? $request->lanyard_options[1] * $request->jumlah : 0;
             $getKail = isset($request->lanyard_options[2]) ? $request->lanyard_options[2] * $request->jumlah : 0;
             $getKertas = isset($request->lanyard_options[3]) ? $request->lanyard_options[3] * $request->jumlah : 0;
+            $getIDCARD = $request->id_card;
             $jenisBarang = $request->jenis_barang;
 
             // dd($getTali, $getStopper, $getKail, $getKertas);
@@ -405,7 +402,8 @@ class InvoiceController extends Controller
             $BijiAsliKail = $KAIL->jumlah_satuan_asli;
 
             // ID CARD
-            $IDCARD = $getBarang->where('nama', 'ID CARD')->first();
+            // dd($getIDCARD);
+            $IDCARD = $getBarang->where('nama',"ID CARD")->first();
             $jumlahIDCARD = $IDCARD->jumlah_satuan;
             $BijiAsliIDCARD = $IDCARD->jumlah_satuan_asli;
 
@@ -447,79 +445,77 @@ class InvoiceController extends Controller
 
 
             // pengurangan pack 
-            $penguranganPackTali = $getTali % $BijiAsli;
-            $penguranganPackStopper = $getStopper % $BijiAsliStopper;
-            $penguranganPackKertas = $getKertas % $BijiAsliKertas;
-            $penguranganPackKail = $getKail % $BijiAsliKail;
-            $penguranganPackIDCARD = $request->id_card % $BijiAsliIDCARD;
-            // dd($penguranganPackTali, $penguranganPackStopper, $penguranganPackKertas, $penguranganPackKail);
+            // tali
+            $penguranganPackTali =  $BijiAsli;
+            $pengaliTali = 1;
+            while($penguranganPackTali * $pengaliTali <= $sisaTali){
+                $pengaliTali++;
+            }
 
-            $SelesihKurangTali = $getTali - $penguranganPackTali;
-            $SelesihKurangStopper = $getStopper - $penguranganPackStopper;
-            $SelesihKurangKertas = $getKertas - $penguranganPackKertas;
-            $SelesihKurangKail = $getKail - $penguranganPackKail;
-            $SelisihKurangIDcard = $request->id_card - $penguranganPackIDCARD;
+            // stopper
+            $penguranganPackStopper = $BijiAsliStopper;
+            $pengaliStopper = 1;
+            while($penguranganPackStopper * $pengaliStopper <= $sisaStopper){
+                $pengaliStopper++;
+            }
+
+            // kertas
+            $penguranganPackKertas = $BijiAsliKertas;
+            $pengaliKertas = 1;
+            while($penguranganPackKertas * $pengaliKertas <= $sisaKertas){
+                $pengaliKertas++;
+            }
+
+            $penguranganPackKail = $BijiAsliKail;
+            $pengaliKail = 1;
+            while($penguranganPackKail * $pengaliKail <= $sisaKail){
+                $pengaliKail++;
+            }
+
+            $penguranganPackIDCARD = $BijiAsliIDCARD;
+            $pengaliIDCARD = 1;
+            while($penguranganPackIDCARD * $pengaliIDCARD <= $sisaIDCARD){
+                $pengaliIDCARD++;
+            }
 
             // dd($SelesihKurangTali, $SelesihKurangStopper, $SelesihKurangKertas, $SelesihKurangKail);
 
             // Tali
-            if($penguranganPackTali == 0){
+            if($penguranganPackTali % $sisaTali == 0){
                 $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangTali == $BijiAsli){
-                    $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_tali = $tali->jumlah_pack;
-                }
-            }
-
-            // ID CARD
-            if($penguranganPackIDCARD == 0){
-                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
-            }else{
-                if($SelisihKurangIDcard == $BijiAsliIDCARD){
-                    $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack;
-                }
+                $jumlah_pack_baru_tali = $tali->jumlah_pack;
             }
 
             // Stopper
-            if($penguranganPackStopper == 0){
+            if($penguranganPackStopper % $sisaStopper == 0){
                 $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangStopper == $BijiAsliStopper){
-                    $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
-                }
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
             }
 
+
             // Kertas
-            if($penguranganPackKertas == 0){
+            if($penguranganPackKertas % $sisaKertas == 0){
                 $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangKertas == $BijiAsliKertas){
-                    $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
-                }
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
             }
 
             // Kail
-            if($penguranganPackKail == 0){
+            if($penguranganPackKail % $sisaKail == 0){
                 $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangKail == $BijiAsliKail){
-                    $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
-                }
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
             }
+
+            // ID CARD
+            if($penguranganPackIDCARD % $sisaIDCARD == 0){
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack;
+            }
+
             // dd($jumlah_pack_baru_tali, $jumlah_pack_baru_stopper, $jumlah_pack_baru_kertas, $jumlah_pack_baru_kail);
 
             // update data tali, stopper, kertas and kail
@@ -630,92 +626,91 @@ class InvoiceController extends Controller
 
 
             // pengurangan pack 
-            $penguranganPackTali = $getTali % $BijiAsli;
-            $penguranganPackStopper = $getStopper % $BijiAsliStopper;
-            $penguranganPackKertas = $getKertas % $BijiAsliKertas;
-            $penguranganPackKail = $getKail % $BijiAsliKail;
-            $penguranganPackIDCARD = $request->id_card % $BijiAsliIDCARD;
-            $penguranganPackHolder = $request->jumlah % $bijiAsliHolder;
+            // tali
+            $penguranganPackTali =  $BijiAsli;
+            $pengaliTali = 1;
+            while($penguranganPackTali * $pengaliTali <= $sisaTali){
+                $pengaliTali++;
+            }
+
+            // stopper
+            $penguranganPackStopper = $BijiAsliStopper;
+            $pengaliStopper = 1;
+            while($penguranganPackStopper * $pengaliStopper <= $sisaStopper){
+                $pengaliStopper++;
+            }
+
+            // kertas
+            $penguranganPackKertas = $BijiAsliKertas;
+            $pengaliKertas = 1;
+            while($penguranganPackKertas * $pengaliKertas <= $sisaKertas){
+                $pengaliKertas++;
+            }
+
+            $penguranganPackKail = $BijiAsliKail;
+            $pengaliKail = 1;
+            while($penguranganPackKail * $pengaliKail <= $sisaKail){
+                $pengaliKail++;
+            }
+
+            $penguranganPackIDCARD = $BijiAsliIDCARD;
+            $pengaliIDCARD = 1;
+            while($penguranganPackIDCARD * $pengaliIDCARD <= $sisaIDCARD){
+                $pengaliIDCARD++;
+            }
+
+            $penguranganPackHolder = $bijiAsliHolder;
+            $pengaliHolder = 1;
+            while($penguranganPackHolder * $pengaliHolder <= $sisaHolder){
+                $pengaliHolder++;
+            }
+
             // dd($penguranganPackTali, $penguranganPackStopper, $penguranganPackKertas, $penguranganPackKail);
 
-            $SelesihKurangTali = $getTali - $penguranganPackTali;
-            $SelesihKurangStopper = $getStopper - $penguranganPackStopper;
-            $SelesihKurangKertas = $getKertas - $penguranganPackKertas;
-            $SelesihKurangKail = $getKail - $penguranganPackKail;
-            $SelisihKurangIDcard = $request->id_card - $penguranganPackIDCARD;
-            $SelisihKurangHolder = $request->jumlah - $penguranganPackHolder;
-
-            // dd($SelesihKurangTali, $SelesihKurangStopper, $SelesihKurangKertas, $SelesihKurangKail);
-
+            
             // Tali
-            if($penguranganPackTali == 0){
+            if($penguranganPackTali % $sisaTali == 0){
                 $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangTali == $BijiAsli){
-                    $jumlah_pack_baru_tali = $tali->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_tali = $tali->jumlah_pack;
-                }
-            }
-
-            // ID CARD
-            if($penguranganPackIDCARD == 0){
-                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
-            }else{
-                if($SelisihKurangIDcard == $BijiAsliIDCARD){
-                    $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack;
-                }
-            }
-
-            // holder
-            if($penguranganPackHolder == 0){
-                $jumlah_pack_baru_holder = $holder->jumlah_pack - 1;
-            }else{
-                if($SelisihKurangHolder == $bijiAsliHolder){
-                    $jumlah_pack_baru_holder = $holder->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_holder = $holder->jumlah_pack;
-                }
+                $jumlah_pack_baru_tali = $tali->jumlah_pack;
             }
 
             // Stopper
-            if($penguranganPackStopper == 0){
+            if($penguranganPackStopper % $sisaStopper == 0){
                 $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangStopper == $BijiAsliStopper){
-                    $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
-                }
+                $jumlah_pack_baru_stopper = $STOPPER->jumlah_pack;
             }
 
+
             // Kertas
-            if($penguranganPackKertas == 0){
+            if($penguranganPackKertas % $sisaKertas == 0){
                 $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangKertas == $BijiAsliKertas){
-                    $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
-                }
+                $jumlah_pack_baru_kertas = $KERTAS->jumlah_pack;
             }
 
             // Kail
-            if($penguranganPackKail == 0){
+            if($penguranganPackKail % $sisaKail == 0){
                 $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
             }else{
-                // pemblian lebih dari 25 
-                if($SelesihKurangKail == $BijiAsliKail){
-                    $jumlah_pack_baru_kail = $KAIL->jumlah_pack - 1;
-                }else{
-                    $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
-                }
+                $jumlah_pack_baru_kail = $KAIL->jumlah_pack;
             }
+
+            // ID CARD
+            if($penguranganPackIDCARD % $sisaIDCARD == 0){
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_IDCard = $IDCARD->jumlah_pack;
+            }
+
+            // Holder
+            if($penguranganPackHolder % $sisaHolder == 0){
+                $jumlah_pack_baru_Holder = $holder->jumlah_pack - 1;
+            }else{
+                $jumlah_pack_baru_Holder = $holder->jumlah_pack;
+            }
+
             // dd($jumlah_pack_baru_tali, $jumlah_pack_baru_stopper, $jumlah_pack_baru_kertas, $jumlah_pack_baru_kail);
 
             // update data tali, stopper, kertas and kail
@@ -739,6 +734,10 @@ class InvoiceController extends Controller
                 'jumlah_pack' => $jumlah_pack_baru_IDCard,
                 'jumlah_satuan' => $sisaIDCARD
             ]);
+            $updateHolder = Inv::where("nama", "HOLDER")->update([
+                'jumlah_pack' => $jumlah_pack_baru_Holder,
+                'jumlah_satuan' => $sisaHolder
+            ]);
 
         }else{
             // pengurangan barang non paket
@@ -760,7 +759,6 @@ class InvoiceController extends Controller
             }
 
             // pengurangan pack
-            $penguraganPack = $a % $BijiAsli; // PENGURANGAN 1 PACK LANGSUNG
             $kelipatanBarang = $BijiAsli; // Inisialisasi kelipatan
             $pengali = 1; // Mulai dengan pengali 1
             while ($kelipatanBarang * $pengali <= $sisa) {
@@ -776,12 +774,12 @@ class InvoiceController extends Controller
             // pemblian lebih dari 25 
             if($kelipatanBarang % $sisa == 0 ){
                 $jumlah_pack_baru = $b - 1;
-                dd("Test 2: ".$jumlah_pack_baru, $sisa, $a);
+                // dd("Test 2: ".$jumlah_pack_baru, $sisa, $a);
             }else{
                 $jumlah_pack_baru = $b;
-                dd("Test 3: ".$jumlah_pack_baru , $sisa, $a);
+                // dd("Test 3: ".$jumlah_pack_baru , $sisa, $a);
             }
-            
+
             $inv->update([
                 'jumlah_satuan' => $sisa,
                 'jumlah_pack' => $jumlah_pack_baru,

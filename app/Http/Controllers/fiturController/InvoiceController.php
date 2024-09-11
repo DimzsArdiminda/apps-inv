@@ -762,22 +762,37 @@ class InvoiceController extends Controller
             // pengurangan pack
             $penguraganPack = $a % $BijiAsli;
 
+
+
+            $kelipatanBarang = $BijiAsli; // Inisialisasi kelipatan
+            $pengali = 1; // Mulai dengan pengali 1
+            while ($kelipatanBarang * $pengali <= $sisa) {
+                $pengali++; // Tingkatkan pengali
+            }
+
+            $kelipatanBarang = $BijiAsli * ($pengali - 1); 
+
+            // dd("masuk : " . $a, "Kelipatan: " . $kelipatanBarang  , " sisa: " . $sisa);
+
+            // dd($penguraganPack);
+
             if($penguraganPack == 0){
                 $jumlah_pack_baru = $b - 1;
+                // dd("Test 1: ".$jumlah_pack_baru , $sisa);
             }else{
                 // pemblian lebih dari 25 
-                if($penguraganPack != 0){
+                if($kelipatanBarang % $sisa == 0 ){
                     $jumlah_pack_baru = $b - 1;
-                    // dd($jumlah_pack_baru);
+                    // dd("Test 2: ".$jumlah_pack_baru, $sisa);
                 }else{
                     $jumlah_pack_baru = $b;
-                    // dd("sisa" . $jumlah_pack_baru);
+                    // dd("Test 3: ".$jumlah_pack_baru , $sisa);
                 }
             }
             
             $inv->update([
+                'jumlah_satuan' => $sisa,
                 'jumlah_pack' => $jumlah_pack_baru,
-                'jumlah_satuan' => $sisa
             ]);
         }
 

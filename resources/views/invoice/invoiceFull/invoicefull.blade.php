@@ -44,7 +44,7 @@
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->nama_barang }}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->jumlah_barang }}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ number_format($item->harga_barang, 0, ',', '.') }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">{{ number_format($item->jumlah_barang * $item->harga_barang, 0, ',', '.') }}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;">{{ number_format($item->total_harga, 0, ',', '.') }}</td>
             </tr>
             @endforeach
         </tbody>

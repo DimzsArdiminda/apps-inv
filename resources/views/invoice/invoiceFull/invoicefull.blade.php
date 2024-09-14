@@ -6,7 +6,7 @@
     <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; margin: 20px 0;">
         <tr>
             <td colspan="2" style="padding: 10px; border-bottom: 1px solid #ddd;">
-                <h6 style="margin: 0; font-weight: bold; color: #007bff;">Brand Invoice</h6>
+                <h6 style="margin: 0; font-weight: bold; color: #007bff;">Brand Invoice costumcraft.id</h6>
             </td>
         </tr>
         <tr>
@@ -34,8 +34,7 @@
                 <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Nama Barang</th>
                 <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Jumlah</th>
                 <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Harga Barang</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Total Harga</th>
-                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Sisa Pembayaran</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Total Harga / item</th>
             </tr>
         </thead>
         <tbody>
@@ -46,14 +45,6 @@
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ $item->jumlah_barang }}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ number_format($item->harga_barang, 0, ',', '.') }}</td>
                 <td style="border: 1px solid #ddd; padding: 8px;">{{ number_format($item->jumlah_barang * $item->harga_barang, 0, ',', '.') }}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">
-                    @php
-                        $sudah_dibayar = $item->sudah_dibayar ?? 0;
-                        $total_harga = $item->jumlah_barang * $item->harga_barang;
-                        $sisa_pembayaran = $total_harga - $sudah_dibayar;
-                    @endphp
-                    {{ $sisa_pembayaran > 0 ? number_format($sisa_pembayaran, 0, ',', '.') : 'Lunas' }}
-                </td>
             </tr>
             @endforeach
         </tbody>
@@ -71,11 +62,8 @@
             </td>
             <td style="padding: 10px; vertical-align: top; width: 33%; text-align: right; font-size: 12px;">
                 @php
-                    $grand_total = $data->sum(function($item) {
-                        return $item->jumlah_barang * $item->harga_barang;
-                    });
-
-                    $total_dibayar = $data->sum('sudah_dibayar');
+                    $grand_total = $data->sum('total_harga');
+                    $total_dibayar = $data->sum('uang_dp_lunas');
                     $total_sisa = $grand_total - $total_dibayar;
                 @endphp
                 <p style="font-weight: bold;">Total: Rp {{ number_format($grand_total, 0, ',', '.') }}</p>

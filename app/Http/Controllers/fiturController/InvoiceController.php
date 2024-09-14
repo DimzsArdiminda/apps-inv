@@ -24,11 +24,13 @@ class InvoiceController extends Controller
         }
 
         // Perhitungan total dan status pembayaran
-        $grand_total = $data->sum(function ($item) {
-            return $item->jumlah_barang * $item->harga_barang;
-        });
+        // $grand_total = $data->sum(function ($item) {
+        //     return $item->jumlah_barang + $item->harga_barang;
+        // });
+        $grand_total = $data->sum('total_harga');
+        // dd($grand_total);
 
-        $total_dibayar = $data->sum('sudah_dibayar');
+        $total_dibayar = $data->sum('uang_dp_lunas');
         $total_sisa = $grand_total - $total_dibayar;
 
         // Proses data yang akan dikirim ke view
@@ -38,6 +40,8 @@ class InvoiceController extends Controller
             'total_dibayar' => $total_dibayar,
             'total_sisa' => $total_sisa,
         ];
+
+        // dd($invoiceData);
 
         // Kirimkan data ke view dan generate PDF
         $pdf = Pdf::loadView('invoice.invoiceFull.invoicefull', $invoiceData)->setPaper('a4', 'portrait');
@@ -51,12 +55,15 @@ class InvoiceController extends Controller
     public function transaksi(Request $req){
         // dd($req->all());
         $getData = Invoice::where('invoice_number', $req->kode)->first();
-        // dd($getData);
+        $dataUang = $getData->uang_dp_lunas == null ? 0 : $getData->uang_dp_lunas;
+        // dd($dataUang);
+
         
         if ($getData) {
             $getData->total_harga_keseluruhan = $req->total;
             $getData->status = $req->status;
-            $getData->uang_dp_lunas = $req->uang_diterima;
+            $getData->uang_dp_lunas = $req->uang_diterima + $dataUang;
+            // dd($getData->uang_dp_lunas);
             $getData->update();
 
             // Masukan ke tabel pemasukan 
@@ -622,7 +629,7 @@ class InvoiceController extends Controller
             $c = $inv->jumlah_satuan;
             $BijiAsli = $inv->jumlah_satuan_asli;
             $PackAsli = $inv->jumlah_pack_asli;
-            $jenisBarang = $request->jenis_barang;
+            $jenisBarang = $request->barang;
 
             // pengurangan satuan
             $sisa = $c - $a;
@@ -1210,6 +1217,7 @@ class InvoiceController extends Controller
             ]);
 
         }else{
+            // dd($request->all());
             // pengurangan barang non paket
             $inv = Inv::where('nama', $request->barang)->first();
             $a = $request->jumlah;
@@ -1217,7 +1225,7 @@ class InvoiceController extends Controller
             $c = $inv->jumlah_satuan;
             $BijiAsli = $inv->jumlah_satuan_asli;
             $PackAsli = $inv->jumlah_pack_asli;
-            $jenisBarang = $request->jenis_barang;
+            $jenisBarang = $request->barang;
 
             // pengurangan satuan
             $sisa = $c - $a;
@@ -1318,7 +1326,7 @@ class InvoiceController extends Controller
         // dd($getID);
         $getData =  Invoice::where('invoice_number', $getID)->get();
         // total semua harga berdasarkan kode invoice
-        $total = Invoice::where('invoice_number', $getID)->sum('harga_barang');
+        $total = Invoice::where('invoice_number', $getID)->sum('total_harga');
         $getKode = $getData->first()->invoice_number;
         $uang = $getData->first()->uang_dp_lunas;
         $sisa = $total - $uang;

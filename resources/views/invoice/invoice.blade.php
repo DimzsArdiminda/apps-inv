@@ -48,6 +48,7 @@
                     {{ $status == 'dp' ? 'DP' : 'Lunas' }}
                 </td>
             </tr>
+           
         </table>
         
         <div class="table-responsive">

@@ -14,41 +14,36 @@ use App\Models\pemasukan_pengeluaran;
 class InvoiceController extends Controller
 {
     public function getInvoice($kode)
-    {
-        // Ambil semua data invoice berdasarkan nomor invoice
-        $data = Invoice::where('invoice_number', $kode)->get();
+{
+    // Ambil semua data invoice berdasarkan nomor invoice
+    $data = Invoice::where('invoice_number', $kode)->get();
 
-        // Cek apakah data ditemukan
-        if ($data->isEmpty()) {
-            return redirect()->back()->withErrors('Invoice not found.');
-        }
-
-        // Perhitungan total dan status pembayaran
-        // $grand_total = $data->sum(function ($item) {
-        //     return $item->jumlah_barang + $item->harga_barang;
-        // });
-        $grand_total = $data->sum('total_harga');
-        // dd($grand_total);
-
-        $total_dibayar = $data->sum('uang_dp_lunas');
-        $total_sisa = $grand_total - $total_dibayar;
-
-        // Proses data yang akan dikirim ke view
-        $invoiceData = [
-            'data' => $data,
-            'grand_total' => $grand_total,
-            'total_dibayar' => $total_dibayar,
-            'total_sisa' => $total_sisa,
-        ];
-
-        // dd($invoiceData);
-
-        // Kirimkan data ke view dan generate PDF
-        $pdf = Pdf::loadView('invoice.invoiceFull.invoicefull', $invoiceData)->setPaper('a4', 'portrait');
-
-        // Unduh PDF
-        return $pdf->download('invoice.pdf');
+    // Cek apakah data ditemukan
+    if ($data->isEmpty()) {
+        return redirect()->back()->withErrors('Invoice not found.');
     }
+
+    // Perhitungan total dan status pembayaran
+    $grand_total = $data->sum('total_harga');
+    $total_dibayar = $data->sum('uang_dp_lunas');
+    $total_sisa = $grand_total - $total_dibayar;
+
+    // Proses data yang akan dikirim ke view
+    $invoiceData = [
+        'data' => $data,
+        'grand_total' => $grand_total,
+        'total_dibayar' => $total_dibayar,
+        'total_sisa' => $total_sisa,
+    ];
+
+    // Aktifkan remote file untuk gambar
+    $pdf = PDF::loadView('invoice.invoiceFull.invoicefull', $invoiceData)
+        ->setPaper('a4', 'portrait');
+
+    // Unduh PDF
+    return $pdf->download('invoice.pdf');
+}
+
 
     
     

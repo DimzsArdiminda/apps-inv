@@ -22,6 +22,22 @@ class inventaris extends Seeder
             'jumlah_satuan_asli' => 25,
         ]);
         inv::create([
+            'nama' => 'ID CARD',
+            'jumlah_satuan' => 50,
+            'jumlah_pack' => 2,
+            'pengisian_terakhir' => 2,
+            'jumlah_pack_asli' => 1,
+            'jumlah_satuan_asli' => 25,
+        ]);
+        inv::create([
+            'nama' => 'HOLDER',
+            'jumlah_satuan' => 50,
+            'jumlah_pack' => 2,
+            'pengisian_terakhir' => 2,
+            'jumlah_pack_asli' => 1,
+            'jumlah_satuan_asli' => 25,
+        ]);
+        inv::create([
             'nama' => 'KERTAS',
             'jumlah_satuan' => 50,
             'jumlah_pack' => 2,

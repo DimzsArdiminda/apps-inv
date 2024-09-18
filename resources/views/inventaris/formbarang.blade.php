@@ -17,17 +17,11 @@
                     <div class="form-group">
                         <label for="NamaBarang" class="text-primary small">Nama Barang</label>
                         <div class="input-group">
-                            <select class="form-control form-control-user @error('nama') is-invalid @enderror" id="NamaBarangSelect" name="nama" required>
-                                <option value="" disabled selected>Pilih Nama Barang</option>
-                                <option value="KERTAS">KERTAS</option>
-                                <option value="KAIL">KAIL</option>
-                                <option value="STOPPER">STOPPER</option>
-                                <option value="TALI">TALI</option>
-                                <option value="ID CARD">ID CARD</option>
-                                <option value="HOLDER">HOLDER</option>
-                                <option value="custom">Input Custom</option>
-                            </select>
-                            <input type="text" class="form-control form-control-user d-none mt-2 @error('nama') is-invalid @enderror" id="CustomNamaBarang" name="nama_custom" placeholder="Masukkan Nama Barang Custom">
+                            <input type="text" class="form-control form-control-user @error('nama') is-invalid @enderror" id="NamaBarang" name="nama" placeholder="Masukkan Nama Barang" autocomplete="off" required>
+                            <ul id="suggestions" class="list-group mt-5 d-none" style="position: absolute; z-index: 1000; width: 100%; max-height: 150px; overflow-y: auto;">
+                                <!-- Suggestion list akan muncul di sini -->
+                            </ul>
+                            <button type="button" id="closeSuggestions" class="btn btn-sm btn-danger d-none mt-2">Tutup</button>
                         </div>
                         @error('nama')
                         <div class="invalid-feedback">
@@ -48,7 +42,7 @@
                     <button class="btn btn-primary btn-lg px-5 rounded-pill" type="submit">
                         Kirim
                     </button>
-                    <a href="{{ route('index.inven') }}" class=" btn btn-lg btn-danger shadow-sm rounded-pill">
+                    <a href="{{ route('index.inven') }}" class="btn btn-lg btn-danger shadow-sm rounded-pill">
                         <i class="fas fa-door-open fa-sm text-white-50"></i> Kembali</a>
                 </form>
             </div>
@@ -57,24 +51,72 @@
 </div>
 
 <script>
-    document.getElementById('NamaBarangSelect').addEventListener('change', function() {
-        var selectElement = document.getElementById('NamaBarangSelect');
-        var customInput = document.getElementById('CustomNamaBarang');
+    const namaBarangInput = document.getElementById('NamaBarang');
+    const suggestionsList = document.getElementById('suggestions');
+    const closeSuggestionsButton = document.getElementById('closeSuggestions');
 
-        if (this.value === 'custom') {
-            selectElement.classList.add('d-none');  // Hide the dropdown
-            customInput.classList.remove('d-none');  // Show the custom input
-            customInput.setAttribute('required', true);
-            customInput.focus();  // Automatically focus the input field for better UX
+    const barangSuggestions = [
+        "KERTAS",
+        "KAIL",
+        "STOPPER",
+        "TALI",
+        "ID CARD",
+        "HOLDER"
+    ];
+
+    // Tampilkan suggestion list
+    function displaySuggestions(suggestions) {
+        suggestionsList.innerHTML = '';
+        suggestions.forEach(item => {
+            const suggestionItem = document.createElement('li');
+            suggestionItem.classList.add('list-group-item', 'list-group-item-action', 'p-2', 'small');
+            suggestionItem.textContent = item;
+            suggestionsList.appendChild(suggestionItem);
+
+            // Isi input ketika user menekan suggestion
+            suggestionItem.addEventListener('click', function() {
+                namaBarangInput.value = item;
+                hideSuggestions(); // Sembunyikan daftar setelah memilih
+            });
+        });
+        suggestionsList.classList.remove('d-none'); // Tampilkan daftar suggestion
+        closeSuggestionsButton.classList.remove('d-none'); // Tampilkan tombol tutup
+    }
+
+    // Sembunyikan suggestion list dan tombol tutup
+    function hideSuggestions() {
+        suggestionsList.classList.add('d-none');
+        closeSuggestionsButton.classList.add('d-none');
+    }
+
+    // Filter suggestion ketika pengguna mengetik
+    namaBarangInput.addEventListener('input', function() {
+        const input = this.value.toLowerCase();
+
+        // Filter suggestion yang sesuai dengan input pengguna
+        const filteredSuggestions = barangSuggestions.filter(item => item.toLowerCase().includes(input));
+
+        // Jika input kosong, tampilkan semua suggestion
+        if (input === '') {
+            displaySuggestions(barangSuggestions);
+        } 
+        // Jika ada hasil yang cocok, tampilkan suggestion yang difilter
+        else if (filteredSuggestions.length > 0) {
+            displaySuggestions(filteredSuggestions);
+        } 
+        // Jika tidak ada hasil, tetap tampilkan semua suggestion
+        else {
+            displaySuggestions(barangSuggestions);
         }
     });
 
-    document.getElementById('CustomNamaBarang').addEventListener('blur', function() {
-        if (this.value === '') {
-            var selectElement = document.getElementById('NamaBarangSelect');
-            selectElement.classList.remove('d-none');  // Show the dropdown again if input is empty
-            this.classList.add('d-none');  // Hide the custom input field
-            this.removeAttribute('required');  // Remove required attribute when hidden
+    // Tombol untuk menutup daftar suggestion
+    closeSuggestionsButton.addEventListener('click', hideSuggestions);
+
+    // Sembunyikan suggestion list jika pengguna klik di luar input dan daftar
+    document.addEventListener('click', function(e) {
+        if (!namaBarangInput.contains(e.target) && !suggestionsList.contains(e.target) && !closeSuggestionsButton.contains(e.target)) {
+            hideSuggestions();
         }
     });
 </script>

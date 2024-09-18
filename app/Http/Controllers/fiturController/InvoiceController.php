@@ -286,7 +286,8 @@ class InvoiceController extends Controller
             $sisaKail = $jumlahKAIL - $getKail;
             $sisaKertas = $jumlahKERTAS - $getKertas;
             if($request->id_card == "ID CARD 2"){
-                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                // $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 1;
             }else{
                 $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
             }
@@ -467,7 +468,8 @@ class InvoiceController extends Controller
             $sisaKail = $jumlahKAIL - $getKail;
             $sisaKertas = $jumlahKERTAS - $getKertas;
             if($request->id_card == "ID CARD 2"){
-                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                // $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 1;
             }else{
                 $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
             }
@@ -881,7 +883,8 @@ class InvoiceController extends Controller
             $sisaKail = $jumlahKAIL - $getKail;
             $sisaKertas = $jumlahKERTAS - $getKertas;
             if($request->id_card == "ID CARD 2"){
-                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                // $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 1;
             }else{
                 $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
             }
@@ -1062,7 +1065,8 @@ class InvoiceController extends Controller
             $sisaKail = $jumlahKAIL - $getKail;
             $sisaKertas = $jumlahKERTAS - $getKertas;
             if($request->id_card == "ID CARD 2"){
-                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                // $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 2;
+                $sisaIDCARD = $jumlahIDCARD - $request->jumlah * 1;
             }else{
                 $sisaIDCARD = $jumlahIDCARD - $request->jumlah;
             }

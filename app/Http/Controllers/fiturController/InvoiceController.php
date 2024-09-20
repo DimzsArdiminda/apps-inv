@@ -14,35 +14,41 @@ use App\Models\pemasukan_pengeluaran;
 class InvoiceController extends Controller
 {
     public function getInvoice($kode)
-{
-    // Ambil semua data invoice berdasarkan nomor invoice
-    $data = Invoice::where('invoice_number', $kode)->get();
+    {
+        // Ambil semua data invoice berdasarkan nomor invoice
+        $data = Invoice::where('invoice_number', $kode)->get();
 
-    // Cek apakah data ditemukan
-    if ($data->isEmpty()) {
-        return redirect()->back()->withErrors('Invoice not found.');
+        // Cek apakah data ditemukan
+        if ($data->isEmpty()) {
+            return redirect()->back()->withErrors('Invoice not found.');
+        }
+
+        // Perhitungan total dan status pembayaran
+        $grand_total = $data->sum('total_harga');
+        $total_dibayar = $data->sum('uang_dp_lunas');
+        $total_sisa = $grand_total - $total_dibayar;
+
+        // Proses data yang akan dikirim ke view
+        $invoiceData = [
+            'data' => $data,
+            'grand_total' => $grand_total,
+            'total_dibayar' => $total_dibayar,
+            'total_sisa' => $total_sisa,
+        ];
+
+        // Ukuran kertas: lebar 15 cm dan tinggi 20 cm
+        // $customPaper = [0, 0, 150, 200]; // width = 150 mm, height = 200 mm
+
+        // Aktifkan remote file untuk gambar
+        $pdf = PDF::loadView('invoice.invoiceFull.invoicefull', $invoiceData)
+            // ->setPaper($customPaper, 'landscape'); // Mengatur ukuran kertas
+            ->setPaper('a4', 'landscape'); // Mengatur ukuran kertas
+
+        // Unduh PDF
+        return $pdf->download($data[0]->invoice_number . '.pdf');
     }
 
-    // Perhitungan total dan status pembayaran
-    $grand_total = $data->sum('total_harga');
-    $total_dibayar = $data->sum('uang_dp_lunas');
-    $total_sisa = $grand_total - $total_dibayar;
-
-    // Proses data yang akan dikirim ke view
-    $invoiceData = [
-        'data' => $data,
-        'grand_total' => $grand_total,
-        'total_dibayar' => $total_dibayar,
-        'total_sisa' => $total_sisa,
-    ];
-
-    // Aktifkan remote file untuk gambar
-    $pdf = PDF::loadView('invoice.invoiceFull.invoicefull', $invoiceData)
-        ->setPaper('a4', 'portrait');
-
-    // Unduh PDF
-    return $pdf->download('invoice.pdf');
-}
+    
 
 
     

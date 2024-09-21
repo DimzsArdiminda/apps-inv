@@ -42,7 +42,7 @@ class InvoiceController extends Controller
         // Aktifkan remote file untuk gambar
         $pdf = PDF::loadView('invoice.invoiceFull.invoicefull', $invoiceData)
             // ->setPaper($customPaper, 'landscape'); // Mengatur ukuran kertas
-            ->setPaper('a4', 'landscape'); // Mengatur ukuran kertas
+            ->setPaper('b5', 'landscape'); // Mengatur ukuran kertas
 
         // Unduh PDF
         return $pdf->download($data[0]->invoice_number . '.pdf');

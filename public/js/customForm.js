@@ -70,7 +70,7 @@ $(document).ready(function () {
         if (selectedPackage === 'Lanyard' || selectedPackage === 'Lanyard + ID Card' || selectedPackage === 'Lanyard + ID Card + Holder') {
             var price;
 
-            if (quantity >= 5 && quantity <= 10) {
+            if (quantity >= 1 && quantity <= 10) {
                 price = selectedPackage === 'Lanyard' ? 17000 : selectedPackage === 'Lanyard + ID Card' ? 20000 : 23000;
             } else if (quantity >= 11 && quantity <= 23) {
                 price = selectedPackage === 'Lanyard' ? 15000 : selectedPackage === 'Lanyard + ID Card' ? 19000 : 21000;

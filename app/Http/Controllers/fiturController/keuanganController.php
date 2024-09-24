@@ -68,6 +68,7 @@ class keuanganController extends Controller
     // Menyimpan data anggaran baru
     public function store(Request $request)
     {
+        // dd($request->all());
         $tanggal = $request->tanggal;
         $jenis = $request->type;
         $jumlah = $request->jumlah;
@@ -77,7 +78,7 @@ class keuanganController extends Controller
             ->where('jenis', $jenis)
             ->first();
 
-        if ($existingEntry) {
+        if (false) {
             $existingEntry->jumlah += $jumlah;
             $existingEntry->keterangan = $keterangan;
             $existingEntry->save();

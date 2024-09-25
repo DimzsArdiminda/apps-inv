@@ -1321,13 +1321,14 @@ class InvoiceController extends Controller
     }
     public function index()
     {
-        $getData = Invoice::select('nama', 'no_hp', 'invoice_number', 'status')
-            ->groupBy('nama', 'no_hp', 'invoice_number', 'status')
-            ->get()->sortBy('status');
+        $getData = Invoice::selectRaw('ANY_VALUE(nama) as nama, invoice_number, ANY_VALUE(status) as status')
+            ->groupBy('invoice_number')
+            ->orderBy('status')
+            ->get();
+            
         return view('invoice.index', ['data' => $getData]);
     }
-    
-   public function indexData($getID){
+    public function indexData($getID){
         // dd($getID);
         $getData =  Invoice::where('invoice_number', $getID)->get();
         // total semua harga berdasarkan kode invoice

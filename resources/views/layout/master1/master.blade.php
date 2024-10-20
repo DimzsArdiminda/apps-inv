@@ -92,7 +92,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; {{ date('Y') }}</span>
+                        <span>Copyright &copy; {{ date('Y') }} | <a href="https://ardiminda.vercel.app">ardiminda project</a></span>
                     </div>
                 </div>
             </footer>

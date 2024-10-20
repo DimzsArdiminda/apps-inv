@@ -32,6 +32,8 @@ Route::get('api/get-barang', [InvoiceController::class, 'storeBarang'])->name('s
 route::get('/dashboard/invoice/detail/{code}', [InvoiceController::class, 'indexData'])->name('invoiceFull')->middleware(['auth', 'verified']); // get all invoice
 Route::get('/dashboard/invoice/', [InvoiceController::class, 'index'])->name('index.invoice')->middleware(['auth', 'verified']); // get all invoice
 Route::get('/dashboard/invoice/form-invoice', [InvoiceController::class, 'indexForm'])->name('formInvoice')->middleware(['auth', 'verified']); // get all invoice
+Route::get('/dashboard/invoice/form-invoice/{id}', [InvoiceController::class, 'showEdit'])->name('edit.invoice')->middleware(['auth', 'verified']); // get all invoice
+Route::post('/dashboard/invoice/form-invoice', [InvoiceController::class, 'saveEditInv'])->name('save.barang.edit')->middleware(['auth', 'verified']); // get all invoice
 
 // Routing ketika lupa password
 Route::get('/reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.request');

@@ -13,6 +13,339 @@ use App\Models\pemasukan_pengeluaran;
 
 class InvoiceController extends Controller
 {
+    public function saveEditInv(Request $request){
+        
+        $getJumlahTambah = $request->jumlah_barang; // Barang yang ditambahkan
+        $getJumlahPengurangan = $request->jumlah_barang_baru; // Barang yang diambil
+        $getHarga = $request->harga_barang;
+       
+        
+        if($request->nama_barang === "Lanyard"){
+            // Tali
+            $getTali = Inv::where('nama', 'TALI')->first();
+            $getTotalBarangTali = $getTali->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganTali = $getTotalBarangTali - $getJumlahPengurangan;
+
+            // Cek apakah stok mencukupi untuk pengambilan barang Tali
+            if ($stokSetelahPenguranganTali < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Tali)');
+            }
+
+            // Update jumlah dan harga barang pada tabel invoice
+            $harga_total = $request->harga_barang * $getJumlahPengurangan;
+            $HargaPass = $request->harga_barang == "on" ? $request->harga_barang : $harga_total;
+
+            $data = Invoice::where('id', $request->id)->first();
+            $data->jumlah_barang = $getJumlahPengurangan;
+            $data->harga_barang = $request->harga_barang;
+            $data->total_harga = $HargaPass;
+            $data->update();
+
+            // Kurangi stok Tali
+            $getTali->update([
+                'jumlah_satuan' => $stokSetelahPenguranganTali
+            ]);
+
+            // Stopper
+            $getStopper = Inv::where('nama', 'STOPPER')->first();
+            $getTotalBarangStopper = $getStopper->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganStopper = $getTotalBarangStopper - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganStopper < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Stopper)');
+            }
+
+            // Kurangi stok Stopper
+            $getStopper->update([
+                'jumlah_satuan' => $stokSetelahPenguranganStopper
+            ]);
+
+            // Kail
+            $getKail = Inv::where('nama', 'KAIL')->first();
+            $getTotalBarangKail = $getKail->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganKail = $getTotalBarangKail - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganKail < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Kail)');
+            }
+
+            // Kurangi stok Kail
+            $getKail->update([
+                'jumlah_satuan' => $stokSetelahPenguranganKail
+            ]);
+
+            // Kertas
+            $getKertas = Inv::where('nama', 'KERTAS')->first();
+            $getTotalBarangKertas = $getKertas->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganKertas = $getTotalBarangKertas - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganKertas < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Kertas)');
+            }
+
+            // Kurangi stok Kertas
+            $getKertas->update([
+                'jumlah_satuan' => $stokSetelahPenguranganKertas
+            ]);
+
+            // Setelah semua stok diperbarui dan dicek, lanjutkan logika bisnis lainnya
+            return redirect()->back()->with('success', 'Stok dan invoice berhasil diperbarui');
+
+
+        }elseif($request->nama_barang === 'Lanyard + ID Card'){
+
+            // Tali
+            $getTali = Inv::where('nama', 'TALI')->first();
+            $getTotalBarangTali = $getTali->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganTali = $getTotalBarangTali - $getJumlahPengurangan;
+
+            // Cek apakah stok mencukupi untuk pengambilan barang Tali
+            if ($stokSetelahPenguranganTali < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Tali)');
+            }
+
+            // Update jumlah dan harga barang pada tabel invoice
+            $harga_total = $request->harga_barang * $getJumlahPengurangan;
+            $HargaPass = $request->harga_barang == "on" ? $request->harga_barang : $harga_total;
+
+            $data = Invoice::where('id', $request->id)->first();
+            $data->jumlah_barang = $getJumlahPengurangan;
+            $data->harga_barang = $request->harga_barang;
+            $data->total_harga = $HargaPass;
+            $data->update();
+
+            // Kurangi stok Tali
+            $getTali->update([
+                'jumlah_satuan' => $stokSetelahPenguranganTali
+            ]);
+
+            // Stopper
+            $getStopper = Inv::where('nama', 'STOPPER')->first();
+            $getTotalBarangStopper = $getStopper->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganStopper = $getTotalBarangStopper - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganStopper < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Stopper)');
+            }
+
+            // Kurangi stok Stopper
+            $getStopper->update([
+                'jumlah_satuan' => $stokSetelahPenguranganStopper
+            ]);
+
+            // Kail
+            $getKail = Inv::where('nama', 'KAIL')->first();
+            $getTotalBarangKail = $getKail->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganKail = $getTotalBarangKail - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganKail < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Kail)');
+            }
+
+            // Kurangi stok Kail
+            $getKail->update([
+                'jumlah_satuan' => $stokSetelahPenguranganKail
+            ]);
+
+            // Kertas
+            $getKertas = Inv::where('nama', 'KERTAS')->first();
+            $getTotalBarangKertas = $getKertas->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganKertas = $getTotalBarangKertas - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganKertas < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Kertas)');
+            }
+
+            // Kurangi stok Kertas
+            $getKertas->update([
+                'jumlah_satuan' => $stokSetelahPenguranganKertas
+            ]);
+
+            // ID Card
+            $getIDCARD = Inv::where('nama', 'ID CARD')->first();
+            $getTotalBarangIDCard = $getIDCARD->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganIDCard = $getTotalBarangIDCard - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganIDCard < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (ID CARD)');
+            }
+
+            // Kurangi stok ID Card
+            $getIDCARD->update([
+                'jumlah_satuan' => $stokSetelahPenguranganIDCard
+            ]);
+
+            // Holder
+            $getHolder = Inv::where('nama', 'HOLDER')->first();
+            $getTotalBarangHolder = $getHolder->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganHolder = $getTotalBarangHolder - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganHolder < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Holder)');
+            }
+
+            // Kurangi stok Holder
+            $getHolder->update([
+                'jumlah_satuan' => $stokSetelahPenguranganHolder
+            ]);
+
+
+        }elseif($request->nama_barang === 'Lanyard + ID Card + Holder'){
+
+            // Tali
+            $getTali = Inv::where('nama', 'TALI')->first();
+            $getTotalBarangTali = $getTali->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganTali = $getTotalBarangTali - $getJumlahPengurangan;
+
+            // Cek apakah stok mencukupi untuk pengambilan barang Tali
+            if ($stokSetelahPenguranganTali < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Tali)');
+            }
+
+            // Update jumlah dan harga barang pada tabel invoice
+            $harga_total = $request->harga_barang * $getJumlahPengurangan;
+            $HargaPass = $request->harga_barang == "on" ? $request->harga_barang : $harga_total;
+
+            $data = Invoice::where('id', $request->id)->first();
+            $data->jumlah_barang = $getJumlahPengurangan;
+            $data->harga_barang = $request->harga_barang;
+            $data->total_harga = $HargaPass;
+            $data->update();
+
+            // Kurangi stok Tali
+            $getTali->update([
+                'jumlah_satuan' => $stokSetelahPenguranganTali
+            ]);
+
+            // Stopper
+            $getStopper = Inv::where('nama', 'STOPPER')->first();
+            $getTotalBarangStopper = $getStopper->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganStopper = $getTotalBarangStopper - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganStopper < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Stopper)');
+            }
+
+            // Kurangi stok Stopper
+            $getStopper->update([
+                'jumlah_satuan' => $stokSetelahPenguranganStopper
+            ]);
+
+            // Kail
+            $getKail = Inv::where('nama', 'KAIL')->first();
+            $getTotalBarangKail = $getKail->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganKail = $getTotalBarangKail - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganKail < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Kail)');
+            }
+
+            // Kurangi stok Kail
+            $getKail->update([
+                'jumlah_satuan' => $stokSetelahPenguranganKail
+            ]);
+
+            // Kertas
+            $getKertas = Inv::where('nama', 'KERTAS')->first();
+            $getTotalBarangKertas = $getKertas->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganKertas = $getTotalBarangKertas - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganKertas < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Kertas)');
+            }
+
+            // Kurangi stok Kertas
+            $getKertas->update([
+                'jumlah_satuan' => $stokSetelahPenguranganKertas
+            ]);
+
+            // ID Card
+            $getIDCARD = Inv::where('nama', 'ID CARD')->first();
+            $getTotalBarangIDCard = $getIDCARD->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganIDCard = $getTotalBarangIDCard - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganIDCard < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (ID CARD)');
+            }
+
+            // Kurangi stok ID Card
+            $getIDCARD->update([
+                'jumlah_satuan' => $stokSetelahPenguranganIDCard
+            ]);
+
+            // Holder
+            $getHolder = Inv::where('nama', 'HOLDER')->first();
+            $getTotalBarangHolder = $getHolder->jumlah_satuan + $getJumlahTambah;
+            $stokSetelahPenguranganHolder = $getTotalBarangHolder - $getJumlahPengurangan;
+
+            if ($stokSetelahPenguranganHolder < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup (Holder)');
+            }
+
+            // Kurangi stok Holder
+            $getHolder->update([
+                'jumlah_satuan' => $stokSetelahPenguranganHolder
+            ]);
+
+        }else{
+
+            // Ambil stok barang saat ini berdasarkan nama barang
+            $getJumlahBarang = Inv::where('nama', $request->nama_barang)->first();
+            // dd($getJumlahBarang);
+            // dd($request->all());
+
+            // Tambahkan jumlah barang yang baru ditambahkan ke stok saat ini
+            $getTotalBarang = $getJumlahBarang->jumlah_satuan + $getJumlahTambah;
+            // dd($getJumlahTambah);
+            // dd($getTotalBarang);
+                        
+            // Pengurangan stok sesuai dengan jumlah barang yang diambil
+            $stokSetelahPengurangan =  $getTotalBarang - $getJumlahPengurangan;
+            // dd($stokSetelahPengurangan);
+
+
+            // Cek apakah stok mencukupi untuk pengambilan barang
+            if ($stokSetelahPengurangan < 5) {
+                return redirect()->back()->with('error', 'Barang tidak cukup');
+            }
+
+
+
+            $harga_total = $request->harga_barang * $getJumlahPengurangan;
+            $HargaPass = $request->harga_barang == "on" ? $request->harga_barang : $harga_total ;
+
+            // dd($HargaPass);
+            // update tabel invoice
+            $data = Invoice::where('id', $request->id)->first();
+            // dd($data);
+            $data->jumlah_barang = $getJumlahPengurangan;
+            $data->harga_barang = $request->harga_barang;
+            $data->total_harga = $HargaPass;
+            // Kurangi stok barang sesuai pengambilan
+            $getJumlahBarang->update([
+                'jumlah_satuan' => $stokSetelahPengurangan
+            ]);
+            $data->update();
+        }
+        
+
+        // Masukan ke tabel pemasukan 
+        $data = new pemasukan_pengeluaran();
+        $data->tanggal = date('Y-m-d');
+        $data->jenis = 'pemasukan';
+        $data->jumlah = $request->harga_barang;
+        $data->keterangan = 'Update Pemasukan dari penjualan barang '. $request->nama_barang . ' dengan kode invoice '. $request->kode ;
+        $data->save();
+
+        return redirect()->back()->with('success', 'Data berhasil diupdate');
+    }
+    public function showEdit($id)
+    {
+        // dd($id);
+        $data = Invoice::where('id', $id)->first();
+        // dd($data);
+        return view('invoice.edit', ['data' => $data]);
+    }
     public function getInvoice($kode)
     {
         // Ambil semua data invoice berdasarkan nomor invoice

@@ -44,9 +44,10 @@
             </tr>
             <tr>
                 <th>Status Pembayaran</th>
-                <td class="{{ $status == 'dp' ? 'bg-danger' : 'bg-success' }}" style="color: black">
+                <td class="{{ $status == 'dp' ? 'bg-danger text-white' : 'bg-success text-white' }}">
                     {{ $status == 'dp' ? 'DP' : 'Lunas' }}
                 </td>
+                
             </tr>
            
         </table>
@@ -84,6 +85,12 @@
                             <button class="btn btn-danger btn-sm" onclick="confirmDelete2({{ $inv->id }})">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
+
+                            @if ($status == 'dp')
+                                <a class="btn btn-warning btn-sm mt-2" href="{{ route("edit.invoice", $inv->id )}}">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                            @endif
                             <form id="delete-form-{{ $inv->id }}" action="{{ route('delete.item', $inv->id) }}" method="POST" style="display: none;">
                                 @csrf
                                 @method('DELETE')

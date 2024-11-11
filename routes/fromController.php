@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\fiturController\notaController;
 use App\Http\Controllers\fiturController\keuanganController;
 use App\Http\Controllers\fiturController\InventarisController;
 use App\Http\Controllers\fiturController\InvoiceController;

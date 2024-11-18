@@ -1,3 +1,7 @@
+@php
+use App\Enums\PermissionLevel;
+@endphp
+ 
  <!-- Sidebar -->
  <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
@@ -18,6 +22,13 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
+    @if(@auth()->user()->permission_level->value != PermissionLevel::USER)
+    <li class="nav-item @yield('menuUsers')">
+        <a class="nav-link" href="{{ url('/dashboard/users') }}">
+            <i class="fas fa-fw fa-solid fa-users"></i>
+            <span>Pengguna</span></a>
+    </li>
+    @endif
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -44,6 +55,12 @@
         <a class="nav-link" href="{{ route('index.invoice') }}">
             <i class="fas fa-fw fa-receipt"></i>
             <span>Invoice</span></a>
+    </li>
+
+    <li class="nav-item @yield('geminiAI')">
+        <a class="nav-link" href="{{ route('gemini') }}">
+            <i class="fas fa-fw fa-atom"></i>
+            <span>AI Analysis</span></a>
     </li>
 
     <!-- Divider -->

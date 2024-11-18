@@ -1654,12 +1654,13 @@ class InvoiceController extends Controller
     }
     public function index()
     {
-        $getData = Invoice::selectRaw('ANY_VALUE(nama) as nama, invoice_number, ANY_VALUE(status) as status')
-            ->groupBy('invoice_number')
-            ->orderBy('status')
-            ->get();
+        // $getData = Invoice::selectRaw('ANY_VALUE(nama) as nama, invoice_number, ANY_VALUE(status) as status')
+        //     ->groupBy('invoice_number')
+        //     ->orderBy('status')
+        //     ->get();
             
-        return view('invoice.index', ['data' => $getData]);
+        // return view('invoice.index', ['data' => $getData]);
+        return view('invoice.index');
     }
     public function indexData($getID){
         // dd($getID);

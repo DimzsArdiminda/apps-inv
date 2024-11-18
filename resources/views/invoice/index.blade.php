@@ -29,8 +29,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data as $inv)
-                    <tr>
+                    {{-- @foreach($data as $inv) --}}
+                    {{-- <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $inv->nama }}</td>
                         <td>{{ $inv->no_hp }}</td>
@@ -51,13 +51,32 @@
                             <form id="delete-form-{{ $inv->invoice_number }}" action="{{ route('delete.invoice', $inv->invoice_number) }}" method="POST" style="display: none;">
                                 @csrf
                                 @method('DELETE')
-                                {{--  --}}
                                 <button type="button" class="btn btn-danger mb-3" onclick="confirmDelete3('{{ $inv->invoice_number }}')">Hapus</button>
                             </form>
                         </td>
-                        
+                    </tr> --}}
+                    <tr>
+                        <td>1</td>
+                        <td>Avan</td>
+                        <td>08123456789</td>
+                        <td>01</td>
+                        <td>
+                            Lunas
+                        <td>
+                            <a href="" class="btn btn-sm btn-warning">
+                                <i class="fas fa-shopping-basket"></i>
+                            </a>
+                            <button class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <form action="" method="POST" style="display: none;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger mb-3">Hapus</button>
+                            </form>
+                        </td>
                     </tr>
-                    @endforeach
+                    {{-- @endforeach --}}
                 </tbody>
             </table>
         </div>

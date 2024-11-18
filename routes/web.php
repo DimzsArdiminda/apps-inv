@@ -16,7 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Routing ketika berhasil login dan langsung menuju ke halaman dashboard
     Route::get('/dashboard', function () {
         return view('dashboard.dashboard');
-    })->name('dashboard');
+    })->name('dashboard');  
 
     // Routing ketika menuju ke halaman inventaris
     Route::get('/dashboard/inventaris', function () {
@@ -33,8 +33,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('invoice.forminvoice');
     })->name('formInvoice');
 
+    Route::get('/gemini', function () {
+        return view('gemini.gemini');
+    })->name('gemini');
+
 
     include 'fromController.php';
+    include 'user/userRoutes.php';
 });
 
 require __DIR__.'/auth.php';

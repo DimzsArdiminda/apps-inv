@@ -57,6 +57,12 @@ use App\Enums\PermissionLevel;
             <span>Invoice</span></a>
     </li>
 
+    <li class="nav-item @yield('geminiAI')">
+        <a class="nav-link" href="{{ route('gemini') }}">
+            <i class="fas fa-fw fa-atom"></i>
+            <span>AI Analysis</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

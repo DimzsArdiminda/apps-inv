@@ -5,7 +5,7 @@
 
 @include('utils.notif')
 
-<div class="col-xl-10 col-lg-12 col-md-9">
+<div class="col-xl-10 col-lg-12 col-md-9">d
     <div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Form Invoice</h6>

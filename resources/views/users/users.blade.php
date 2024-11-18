@@ -29,6 +29,7 @@ use App\Enums\PermissionLevel;
                         <th>Hak Akses</th>
                         <th>Tanggal Registrasi</th>
                         <th>Update Terakhir</th>
+                        <th>Status Premium</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -40,6 +41,7 @@ use App\Enums\PermissionLevel;
                         <td>{{ str_replace("_", " ",$user->permission_level->name) }}</td>
                         <td>{{ $user->created_at }}</td>
                         <td>{{ $user->updated_at }}</td>
+                        <td>1</td>
                         <td class="d-flex justify-content-center">
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#userFormModal" data-user="{{json_encode($user)}}">
                                 <i class="fas fa-edit"></i>
@@ -49,6 +51,9 @@ use App\Enums\PermissionLevel;
                                 <i class="fas fa-trash"></i>
                             </button>
                             @endif
+                            <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#generateLicenseKeyModal" data-user="{{json_encode($user)}}">
+                                <i class="fas fa-cogs"></i>
+                            </button>
                         </td>
                     </tr>
                     @endforeach
@@ -156,6 +161,26 @@ use App\Enums\PermissionLevel;
     </div>
 </div>
 
+{{-- generate license key Modal --}}
+<div class="modal fade" id="generateLicenseKeyModal" tabindex="-1" role="dialog" aria-labelledby="generateLicenseKeyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="generateLicenseKeyModalLabel">Generated License Key</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="licenseKey"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Delete User Modal -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -181,6 +206,25 @@ use App\Enums\PermissionLevel;
     </div>
 </div>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#generateLicenseKeyModal').on('show.bs.modal', function (event) {
+            var licenseKey = generateLicenseKey(16);
+            document.getElementById('licenseKey').textContent = licenseKey;
+        });
+
+        function generateLicenseKey(length) {
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var result = '';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+    });
+</script>
 
 <script>
     $(document).ready(function() {

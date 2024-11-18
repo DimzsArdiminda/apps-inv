@@ -33,6 +33,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('invoice.forminvoice');
     })->name('formInvoice');
 
+    Route::get('/gemini', function () {
+        return view('gemini.gemini');
+    })->name('gemini');
+
 
     include 'fromController.php';
     include 'user/userRoutes.php';
